@@ -31,11 +31,18 @@
 *.out
 *.app
 
+# Build Folder
+build/
+
+# VSCode Folder
+.vscode
+
 # MacOS Stuff
 #-- General
 .DS_Store
 .AppleDouble
 .LSOverride
+.cache/
 
 #-- Icon must end with two \r
 Icon
