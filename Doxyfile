@@ -1,0 +1,17 @@
+PROJECT_NAME           = "SproSim"
+PROJECT_NUMBER         = "0.1.0"
+PROJECT_BRIEF         = "C++ Espresso Simulation"
+OUTPUT_DIRECTORY      = docs/reference
+
+INPUT                 = include/sprosim/interfaces/IParticle.h
+FILE_PATTERNS         = *.h
+RECURSIVE             = NO
+
+GENERATE_HTML         = YES
+GENERATE_LATEX        = NO
+HTML_OUTPUT          = html
+
+EXTRACT_ALL          = YES
+EXTRACT_PRIVATE      = YES
+OPTIMIZE_OUTPUT_FOR_C = NO
+BUILTIN_STL_SUPPORT  = YES
