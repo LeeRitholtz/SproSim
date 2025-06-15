@@ -34,6 +34,10 @@
 # Build Folder
 build/
 
+# CTest generated directories
+tests/Testing/
+Testing/
+
 # VSCode Folder
 .vscode
 
