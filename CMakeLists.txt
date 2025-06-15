@@ -14,7 +14,7 @@ add_library(sprosim
 )
 
 # Set include directories for the library
-target_include_directories(sprosim 
+target_include_directories(sprosim
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
@@ -37,3 +37,18 @@ install(DIRECTORY include/
 
 # Add tests subdirectory
 add_subdirectory(tests)
+
+# Add demo executable
+add_executable(sprosim_demo
+    demo/main.cpp
+)
+
+# Link demo with the library
+target_link_libraries(sprosim_demo PRIVATE
+    sprosim
+)
+
+# Set include directories for demo
+target_include_directories(sprosim_demo PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
