@@ -1,0 +1,153 @@
+<ServerManagerState version="5.10.1">
+  <GlobalPropertiesManager group="misc" type="GlobalPropertiesManager">
+    <Property name="BackgroundColor" id="6000.BackgroundColor" number_of_elements="3">
+      <Element index="0" value="0.32"/>
+      <Element index="1" value="0.34"/>
+      <Element index="2" value="0.43"/>
+    </Property>
+  </GlobalPropertiesManager>
+
+  <ProxyCollection name="sources">
+    <Item id="6001" name="PVDReader"/>
+  </ProxyCollection>
+
+  <!-- PVD Reader for loading time series data -->
+  <Proxy group="sources" type="PVDReader" id="6001" servers="1">
+    <Property name="FileName" id="6001.FileName" number_of_elements="1">
+      <Element index="0" value="brewing_simulation.pvd"/>
+    </Property>
+    <Property name="TimestepValues" id="6001.TimestepValues"/>
+  </Proxy>
+
+  <!-- Glyph filter for particles -->
+  <Proxy group="filters" type="Glyph" id="6002" servers="1">
+    <Property name="Input" id="6002.Input" number_of_elements="1">
+      <Proxy value="6001" output_port="0"/>
+    </Property>
+    <Property name="Source" id="6002.Source" number_of_elements="1">
+      <Proxy value="6003"/>
+    </Property>
+    <Property name="ScaleMode" id="6002.ScaleMode" number_of_elements="1">
+      <Element index="0" value="2"/>
+    </Property>
+    <Property name="ScaleFactor" id="6002.ScaleFactor" number_of_elements="1">
+      <Element index="0" value="2.0"/>
+    </Property>
+    <Property name="GlyphMode" id="6002.GlyphMode" number_of_elements="1">
+      <Element index="0" value="0"/>
+    </Property>
+    <Property name="MaximumNumberOfSamplePoints" id="6002.MaximumNumberOfSamplePoints" number_of_elements="1">
+      <Element index="0" value="5000"/>
+    </Property>
+  </Proxy>
+
+  <!-- Sphere source for particle glyphs -->
+  <Proxy group="sources" type="SphereSource" id="6003" servers="1">
+    <Property name="Radius" id="6003.Radius" number_of_elements="1">
+      <Element index="0" value="0.0002"/>
+    </Property>
+    <Property name="ThetaResolution" id="6003.ThetaResolution" number_of_elements="1">
+      <Element index="0" value="8"/>
+    </Property>
+    <Property name="PhiResolution" id="6003.PhiResolution" number_of_elements="1">
+      <Element index="0" value="6"/>
+    </Property>
+  </Proxy>
+
+  <!-- Particle representation -->
+  <Proxy group="representations" type="GeometryRepresentation" id="6004" servers="1">
+    <Property name="Input" id="6004.Input" number_of_elements="1">
+      <Proxy value="6002" output_port="0"/>
+    </Property>
+    <Property name="ColorArrayName" id="6004.ColorArrayName" number_of_elements="5">
+      <Element index="0" value="0"/>
+      <Element index="1" value="0"/>
+      <Element index="2" value="0"/>
+      <Element index="3" value="0"/>
+      <Element index="4" value="extraction_state"/>
+    </Property>
+    <Property name="LookupTable" id="6004.LookupTable" number_of_elements="1">
+      <Proxy value="6005"/>
+    </Property>
+    <Property name="MapScalars" id="6004.MapScalars" number_of_elements="1">
+      <Element index="0" value="1"/>
+    </Property>
+  </Proxy>
+
+  <!-- Color lookup table for extraction state -->
+  <Proxy group="lookup_tables" type="PVLookupTable" id="6005" servers="1">
+    <Property name="ColorSpace" id="6005.ColorSpace" number_of_elements="1">
+      <Element index="0" value="3"/>
+    </Property>
+    <Property name="RGBPoints" id="6005.RGBPoints" number_of_elements="12">
+      <Element index="0" value="0.0"/>
+      <Element index="1" value="0.23"/>
+      <Element index="2" value="0.30"/>
+      <Element index="3" value="0.75"/>
+      <Element index="4" value="0.5"/>
+      <Element index="5" value="0.86"/>
+      <Element index="6" value="0.64"/>
+      <Element index="7" value="0.20"/>
+      <Element index="8" value="1.0"/>
+      <Element index="9" value="0.45"/>
+      <Element index="10" value="0.27"/>
+      <Element index="11" value="0.07"/>
+    </Property>
+    <Property name="ScalarRangeInitialized" id="6005.ScalarRangeInitialized" number_of_elements="1">
+      <Element index="0" value="1"/>
+    </Property>
+  </Proxy>
+
+  <!-- View setup -->
+  <Proxy group="views" type="RenderView" id="6006" servers="1">
+    <Property name="ViewSize" id="6006.ViewSize" number_of_elements="2">
+      <Element index="0" value="1200"/>
+      <Element index="1" value="800"/>
+    </Property>
+    <Property name="CameraPosition" id="6006.CameraPosition" number_of_elements="3">
+      <Element index="0" value="0.1"/>
+      <Element index="1" value="0.1"/>
+      <Element index="2" value="0.1"/>
+    </Property>
+    <Property name="CameraFocalPoint" id="6006.CameraFocalPoint" number_of_elements="3">
+      <Element index="0" value="0.029"/>
+      <Element index="1" value="0.015"/>
+      <Element index="2" value="0.0"/>
+    </Property>
+    <Property name="CameraViewUp" id="6006.CameraViewUp" number_of_elements="3">
+      <Element index="0" value="0.0"/>
+      <Element index="1" value="0.0"/>
+      <Element index="2" value="1.0"/>
+    </Property>
+    <Property name="CenterOfRotation" id="6006.CenterOfRotation" number_of_elements="3">
+      <Element index="0" value="0.029"/>
+      <Element index="1" value="0.015"/>
+      <Element index="2" value="0.0"/>
+    </Property>
+    <Property name="CameraParallelProjection" id="6006.CameraParallelProjection" number_of_elements="1">
+      <Element index="0" value="0"/>
+    </Property>
+  </Proxy>
+
+  <ProxyCollection name="representations">
+    <Item id="6004" name="ParticleRepresentation"/>
+  </ProxyCollection>
+
+  <ProxyCollection name="views">
+    <Item id="6006" name="RenderView1"/>
+  </ProxyCollection>
+
+  <!-- Animation setup -->
+  <Proxy group="animation" type="AnimationScene" id="6007" servers="1">
+    <Property name="PlayMode" id="6007.PlayMode" number_of_elements="1">
+      <Element index="0" value="0"/>
+    </Property>
+    <Property name="Loop" id="6007.Loop" number_of_elements="1">
+      <Element index="0" value="0"/>
+    </Property>
+    <Property name="NumberOfFrames" id="6007.NumberOfFrames" number_of_elements="1">
+      <Element index="0" value="101"/>
+    </Property>
+  </Proxy>
+
+</ServerManagerState>
