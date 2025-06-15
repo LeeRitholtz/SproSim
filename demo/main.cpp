@@ -9,6 +9,10 @@
 #include "sprosim/WaterFlow.h"
 #include "sprosim/PhysicsSolver.h"
 
+#ifdef SPROSIM_HAS_VTK
+#include "paraview/exporters/VTKExporter.h"
+#endif
+
 using namespace sprosim;
 
 class EspressoBrewingDemo {
@@ -136,18 +140,35 @@ private:
         
         std::cout << "Running brewing simulation..." << std::endl;
         std::cout << "Simulating 30 seconds of extraction..." << std::endl;
+        
+#ifdef SPROSIM_HAS_VTK
+        std::cout << "VTK export enabled - saving visualization data..." << std::endl;
+        sprosim::visualization::VTKExporter vtk_exporter;
+        vtk_exporter.set_output_directory("./demo_output");
+        vtk_exporter.start_time_series("brewing_simulation.pvd", "timestep");
+#else
+        std::cout << "VTK export disabled - install VTK for ParaView visualization" << std::endl;
+#endif
         std::cout << std::endl;
         
         const double total_time = 30.0;    // 30 seconds
         const double dt = 0.01;            // 10ms time steps
         const int total_steps = static_cast<int>(total_time / dt);
         const int report_interval = total_steps / 10; // Report every 10%
+        const int vtk_export_interval = total_steps / 100; // Export every 1%
         
         double current_time = 0.0;
         
         for (int step = 0; step < total_steps; step++) {
             solver->simulate_step(dt);
             current_time += dt;
+            
+#ifdef SPROSIM_HAS_VTK
+            // Export VTK data every 1% of simulation
+            if (step % vtk_export_interval == 0 || step == total_steps - 1) {
+                vtk_exporter.add_timestep_to_series(bed, flow, current_time, step);
+            }
+#endif
             
             // Report progress every 10%
             if (step % report_interval == 0 || step == total_steps - 1) {
@@ -164,6 +185,11 @@ private:
             }
         }
         
+#ifdef SPROSIM_HAS_VTK
+        vtk_exporter.finalize_time_series();
+        std::cout << "VTK files saved to ./demo_output/" << std::endl;
+        std::cout << "Open brewing_simulation.pvd in ParaView for visualization" << std::endl;
+#endif
         std::cout << std::endl;
     }
     
@@ -252,6 +278,18 @@ private:
         }
         
         std::cout << std::endl;
+        
+#ifdef SPROSIM_HAS_VTK
+        std::cout << "=== ParaView Visualization Instructions ===" << std::endl;
+        std::cout << "1. Install ParaView from https://www.paraview.org/" << std::endl;
+        std::cout << "2. Open ParaView and load: ./demo_output/brewing_simulation.pvd" << std::endl;
+        std::cout << "3. Click 'Apply' to load the time series data" << std::endl;
+        std::cout << "4. Use the play button to animate the extraction process" << std::endl;
+        std::cout << "5. Color particles by 'extraction_state' to see extraction progress" << std::endl;
+        std::cout << "6. Add velocity vectors to visualize water flow" << std::endl;
+        std::cout << std::endl;
+#endif
+        
         std::cout << "=== Simulation Complete ===" << std::endl;
     }
 };

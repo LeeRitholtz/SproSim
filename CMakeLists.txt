@@ -38,9 +38,21 @@ install(DIRECTORY include/
 # Add tests subdirectory
 add_subdirectory(tests)
 
+# Add visualization subdirectory
+add_subdirectory(visualization)
+
+# Enable VTK XML export (no VTK library dependency)
+add_compile_definitions(SPROSIM_HAS_VTK)
+message(STATUS "VTK XML export enabled - install ParaView to visualize results")
+
 # Add demo executable
 add_executable(sprosim_demo
     demo/main.cpp
+)
+
+# Add realistic demo executable
+add_executable(sprosim_demo_realistic
+    demo/demo_realistic.cpp
 )
 
 # Link demo with the library
@@ -48,7 +60,20 @@ target_link_libraries(sprosim_demo PRIVATE
     sprosim
 )
 
+# Link realistic demo with the library
+target_link_libraries(sprosim_demo_realistic PRIVATE
+    sprosim
+)
+
+# Link with visualization library
+target_link_libraries(sprosim_demo PRIVATE sprosim_visualization)
+target_link_libraries(sprosim_demo_realistic PRIVATE sprosim_visualization)
+
 # Set include directories for demo
 target_include_directories(sprosim_demo PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_include_directories(sprosim_demo_realistic PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )

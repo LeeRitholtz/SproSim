@@ -9,12 +9,14 @@ SproSim is a C++ library for simulating specialty coffee brewing processes, with
 - **Extraction Kinetics**: Temperature-dependent extraction with saturation effects
 - **Particle Interactions**: Drag forces and bed compaction modeling
 - **Real-time Simulation**: Time-stepped physics solver for dynamic brewing analysis
+- **ParaView Visualization**: Export simulation data for 3D visualization and analysis
 
 ## Requirements
 
 - CMake 3.20 or higher
 - C++20 compatible compiler (GCC 10+, Clang 12+, or MSVC 2019+)
 - Catch2 v3 (for testing) - will be automatically found or can be installed via package manager
+- ParaView (optional, for visualization) - download from https://www.paraview.org/
 
 ### Installing Dependencies
 
@@ -27,6 +29,8 @@ sudo apt install cmake build-essential libcatch2-dev
 **macOS (with Homebrew):**
 ```bash
 brew install cmake catch2
+# Optional: Install ParaView
+brew install --cask paraview
 ```
 
 **Windows:**
@@ -175,6 +179,7 @@ cd SproSim
 ```
 
 #### What the Demo Does
+**What the Demo Does
 
 The demo runs a complete espresso brewing simulation featuring:
 
@@ -183,6 +188,7 @@ The demo runs a complete espresso brewing simulation featuring:
 - **Brewing Parameters**: 9 bar pressure, 95°C temperature
 - **Simulation Duration**: 30 seconds with 10ms time steps
 - **Real-time Monitoring**: Progress, extraction yield, and TDS tracking
+- **VTK Export**: Automatic export of visualization data for ParaView
 
 #### Demo Output Explained
 
@@ -220,6 +226,14 @@ Coffee Bed Analysis:
 Brewing Quality Assessment:
   Result: WELL-EXTRACTED (balanced, sweet)    # Quality evaluation
   Uniformity: EXCELLENT (even extraction)     # Extraction consistency
+
+=== ParaView Visualization Instructions ===
+1. Install ParaView from https://www.paraview.org/
+2. Open ParaView and load: ./demo_output/brewing_simulation.pvd
+3. Click 'Apply' to load the time series data
+4. Use the play button to animate the extraction process
+5. Color particles by 'extraction_state' to see extraction progress
+6. Add velocity vectors to visualize water flow
 ```
 
 ### Running Tests
@@ -290,6 +304,69 @@ top -pid `pgrep sprosim_demo`
 # Monitor system resources (Linux)
 htop -p `pgrep sprosim_demo`
 ```
+
+## Visualization with ParaView
+
+The simulation automatically exports VTK data files that can be visualized in ParaView for detailed analysis.
+
+### Quick Visualization Setup
+
+1. **Run the demo** to generate visualization data:
+   ```bash
+   cd SproSim/build
+   ./sprosim_demo
+   ```
+
+2. **Open ParaView** and load the time series:
+   - File → Open → Select `demo_output/brewing_simulation.pvd`
+   - Click "Apply" to load all timesteps
+
+3. **Visualize particles** with extraction colors:
+   - Filters → Glyph (to make particles visible as spheres)
+   - Set Glyph Type to "Sphere" 
+   - Set Scale Factor to 5.0
+   - Color by "extraction_state" (blue = unextracted, brown = extracted)
+
+4. **Animate the extraction**:
+   - Use VCR controls to play through the 30-second brewing process
+   - Watch particles change color as they extract
+
+### Advanced Visualization
+
+**Flow Field Analysis:**
+- Load individual flow files: `timestep_flow_*.vts`
+- Color by "velocity_magnitude" to see water flow patterns
+- Add arrow glyphs to show flow direction
+
+**Cross-Section Views:**
+- Use Slice filter to cut through the coffee bed
+- Analyze extraction patterns at different bed depths
+- Compare extraction uniformity across the bed
+
+**Automated Visualization:**
+```python
+# In ParaView Python shell:
+exec(open('visualization/paraview/scripts/visualize_espresso.py').read())
+quick_espresso_viz('./demo_output/brewing_simulation.pvd')
+```
+
+**Export Options:**
+- Save screenshots of key moments
+- Export animations as MP4/AVI movies
+- Generate publication-quality figures
+
+### Visualization Data Structure
+
+The demo creates these files in `demo_output/`:
+- `brewing_simulation.pvd` - Main collection file (load this)
+- `timestep_particles_*.vtu` - Particle data for each timestep
+- `timestep_flow_*.vts` - Flow field data for each timestep
+
+Each particle contains:
+- Position (x, y coordinates)
+- `extraction_state` (0.0 = fresh, 1.0 = fully extracted)
+- `concentration` (local dissolved coffee concentration)
+- `particle_size` (diameter in meters)
 
 ## Library Usage
 
