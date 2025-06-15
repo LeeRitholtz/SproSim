@@ -38,6 +38,9 @@ build/
 tests/Testing/
 Testing/
 
+# Simulation generated files & directories
+VISUALIZATION_SUCCESS.md
+
 # VSCode Folder
 .vscode
 
@@ -73,3 +76,7 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+#-- Local Project Files
+TODO.md
+PROJECT_STRUCTURE.md
