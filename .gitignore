@@ -38,6 +38,9 @@ build/
 tests/Testing/
 Testing/
 
+# Python tests generated directories
+.ropeproject/
+
 # Simulation generated files & directories
 VISUALIZATION_SUCCESS.md
 
@@ -84,3 +87,7 @@ PROJECT_STRUCTURE.md
 TODO_LLM_FRIENDLY.md
 TODO_RECOMMENDATIONS.md
 LIBRARIES.md
+LLM_COLLABORATION_GUIDELINES.md
+
+#-- zed IDE Files
+.zed/
