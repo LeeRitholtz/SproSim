@@ -78,3 +78,39 @@ target_include_directories(sprosim_demo PRIVATE
 target_include_directories(sprosim_demo_realistic PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
+
+# Code formatting with clang-format
+find_program(CLANG_FORMAT_EXECUTABLE clang-format)
+
+if(CLANG_FORMAT_EXECUTABLE)
+    # Collect all source files
+    file(GLOB_RECURSE ALL_SOURCE_FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/demo/*.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/*.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/visualization/*.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/visualization/*.h
+    )
+
+    # Format target - formats code in-place
+    add_custom_target(format
+        COMMAND ${CLANG_FORMAT_EXECUTABLE} -i ${ALL_SOURCE_FILES}
+        COMMENT "Formatting source code with clang-format"
+        VERBATIM
+    )
+
+    # Format-check target - checks formatting without modifying files
+    add_custom_target(format-check
+        COMMAND ${CLANG_FORMAT_EXECUTABLE} --dry-run --Werror ${ALL_SOURCE_FILES}
+        COMMENT "Checking source code formatting with clang-format"
+        VERBATIM
+    )
+
+    message(STATUS "clang-format found: ${CLANG_FORMAT_EXECUTABLE}")
+    message(STATUS "Added targets: format, format-check")
+else()
+    message(WARNING "clang-format not found. Install clang-format to enable formatting targets.")
+endif()
