@@ -551,9 +551,28 @@ cppcheck --enable=all --std=c++20 src/ include/
 ```
 
 #### Code Formatting
+
+The project uses clang-format with LLVM-based style for consistent code formatting. A `.clang-format` configuration file is provided in the project root.
+
+**Install clang-format:**
 ```bash
-# Format code with clang-format (if available)
+# Ubuntu/Debian
+sudo apt install clang-format
+
+# macOS
+brew install clang-format
+
+# Windows (with Visual Studio)
+# clang-format is included with Visual Studio 2019+
+```
+
+**Format code:**
+```bash
+# Format all source files in-place
 find src include -name "*.cpp" -o -name "*.h" | xargs clang-format -i
+
+# Check formatting without modifying files
+find src include -name "*.cpp" -o -name "*.h" | xargs clang-format --dry-run --Werror
 ```
 
 ### Contributing
