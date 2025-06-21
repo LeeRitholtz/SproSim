@@ -13,14 +13,14 @@
 namespace sprosim {
 
 /**
-* @brief Interface for particles in the simulation
-*
-* Base interface defining the minimum functionality required for
-* any particle type in the simulation. Provides methods
-* for accessing physical properties like position and size.
-*/
+ * @brief Interface for particles in the simulation
+ *
+ * Base interface defining the minimum functionality required for
+ * any particle type in the simulation. Provides methods
+ * for accessing physical properties like position and size.
+ */
 class IParticle {
-public:
+  public:
     /** @brief Virtual destructor ensuring proper cleanup of derived classes */
     virtual ~IParticle() = default;
 
@@ -46,7 +46,7 @@ public:
  * Handles interactions with water flow and extraction physics.
  */
 class ICoffeeParticle : public IParticle {
-public:
+  public:
     /** @brief Virtual destructor ensuring proper cleanup */
     virtual ~ICoffeeParticle() = default;
 

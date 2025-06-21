@@ -1,13 +1,13 @@
 #pragma once
 
+#include "sprosim/CoffeeBed.h"
+#include "sprosim/interfaces/IFlow.h"
+#include "sprosim/interfaces/IParticle.h"
+#include <fstream>
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
-#include <fstream>
-#include "sprosim/interfaces/IParticle.h"
-#include "sprosim/interfaces/IFlow.h"
-#include "sprosim/CoffeeBed.h"
-//#include "sprosim/WaterFlow.h"
+// #include "sprosim/WaterFlow.h"
 
 namespace sprosim {
 namespace visualization {
@@ -20,7 +20,7 @@ namespace visualization {
  * exports and time series collections.
  */
 class VTKExporter {
-public:
+  public:
     VTKExporter() = default;
     ~VTKExporter() = default;
 
@@ -31,8 +31,7 @@ public:
      * @param timestep Optional timestep number for time series
      */
     void export_particles(const std::vector<std::shared_ptr<ICoffeeParticle>>& particles,
-                         const std::string& filename,
-                         int timestep = -1);
+                          const std::string& filename, int timestep = -1);
 
     /**
      * @brief Export flow field to VTK structured grid format
@@ -40,9 +39,8 @@ public:
      * @param filename Output filename (should end in .vts)
      * @param timestep Optional timestep number for time series
      */
-    void export_flow_field(const std::shared_ptr<IWaterFlow>& flow,
-                          const std::string& filename,
-                          int timestep = -1);
+    void export_flow_field(const std::shared_ptr<IWaterFlow>& flow, const std::string& filename,
+                           int timestep = -1);
 
     /**
      * @brief Export complete simulation state (particles + flow)
@@ -52,9 +50,8 @@ public:
      * @param timestep Timestep number
      */
     void export_simulation_state(const std::shared_ptr<CoffeeBed>& bed,
-                                const std::shared_ptr<IWaterFlow>& flow,
-                                const std::string& base_filename,
-                                int timestep);
+                                 const std::shared_ptr<IWaterFlow>& flow,
+                                 const std::string& base_filename, int timestep);
 
     /**
      * @brief Start a time series export sequence
@@ -62,7 +59,7 @@ public:
      * @param base_filename Base name for individual timestep files
      */
     void start_time_series(const std::string& collection_filename,
-                          const std::string& base_filename);
+                           const std::string& base_filename);
 
     /**
      * @brief Add timestep to current time series
@@ -72,9 +69,7 @@ public:
      * @param timestep Timestep number
      */
     void add_timestep_to_series(const std::shared_ptr<CoffeeBed>& bed,
-                               const std::shared_ptr<IWaterFlow>& flow,
-                               double time,
-                               int timestep);
+                                const std::shared_ptr<IWaterFlow>& flow, double time, int timestep);
 
     /**
      * @brief Finalize and close time series collection
@@ -87,7 +82,7 @@ public:
      */
     void set_output_directory(const std::string& directory);
 
-private:
+  private:
     struct TimeSeriesEntry {
         std::string filename;
         double time;
@@ -97,18 +92,17 @@ private:
     // Helper methods for VTK file writing
     void write_vtu_header(std::ofstream& file, size_t num_points, size_t num_cells);
     void write_vtu_points(std::ofstream& file,
-                         const std::vector<std::shared_ptr<ICoffeeParticle>>& particles);
+                          const std::vector<std::shared_ptr<ICoffeeParticle>>& particles);
     void write_vtu_cells(std::ofstream& file, size_t num_particles);
     void write_vtu_point_data(std::ofstream& file,
-                             const std::vector<std::shared_ptr<ICoffeeParticle>>& particles);
+                              const std::vector<std::shared_ptr<ICoffeeParticle>>& particles);
     void write_vtu_footer(std::ofstream& file);
 
-    void write_vts_header(std::ofstream& file, size_t nx, size_t ny, size_t nz,
-                         double dx, double dy, double dz);
-    void write_vts_points(std::ofstream& file, size_t nx, size_t ny, size_t nz,
-                         double dx, double dy, double dz);
-    void write_vts_point_data(std::ofstream& file,
-                             const std::shared_ptr<IWaterFlow>& flow);
+    void write_vts_header(std::ofstream& file, size_t nx, size_t ny, size_t nz, double dx,
+                          double dy, double dz);
+    void write_vts_points(std::ofstream& file, size_t nx, size_t ny, size_t nz, double dx,
+                          double dy, double dz);
+    void write_vts_point_data(std::ofstream& file, const std::shared_ptr<IWaterFlow>& flow);
     void write_vts_footer(std::ofstream& file);
 
     void write_pvd_header(std::ofstream& file);

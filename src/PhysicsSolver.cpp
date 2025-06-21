@@ -3,13 +3,9 @@
 
 namespace sprosim {
 
-PhysicsSolver::PhysicsSolver(std::shared_ptr<CoffeeBed> bed,
-                           std::shared_ptr<IWaterFlow> flow,
-                           Parameters params):
-    coffee_bed_(bed),
-    water_flow_(flow),
-    params_(params)
-{}
+PhysicsSolver::PhysicsSolver(std::shared_ptr<CoffeeBed> bed, std::shared_ptr<IWaterFlow> flow,
+                             Parameters params)
+    : coffee_bed_(bed), water_flow_(flow), params_(params) {}
 
 void PhysicsSolver::simulate_step(double dt) {
     update_flow_field();
@@ -19,8 +15,7 @@ void PhysicsSolver::simulate_step(double dt) {
 
 double PhysicsSolver::calculate_effective_permeability() const {
     double porosity = coffee_bed_->get_porosity();
-    return params_.permeability * std::pow(porosity, 3) /
-           std::pow(1.0 - porosity, 2);
+    return params_.permeability * std::pow(porosity, 3) / std::pow(1.0 - porosity, 2);
 }
 
 double PhysicsSolver::calculate_temperature_factor() const {
@@ -30,7 +25,8 @@ double PhysicsSolver::calculate_temperature_factor() const {
 void PhysicsSolver::update_flow_field() {
     const auto [nx, ny] = water_flow_->get_grid_dimensions();
     const double bed_height = coffee_bed_->get_bed_height();
-    if (bed_height <= 0.0) return;
+    if (bed_height <= 0.0)
+        return;
 
     // Calculate pressure gradient
     double delta_p = params_.outlet_pressure - params_.inlet_pressure;
@@ -59,7 +55,8 @@ void PhysicsSolver::handle_particle_interaction() {
         size_t i = static_cast<size_t>(px / dx);
         size_t j = static_cast<size_t>(py / dx);
 
-        if (i >= nx || j >= ny) continue;
+        if (i >= nx || j >= ny)
+            continue;
 
         auto [vx, vy] = water_flow_->get_velocity(i, j);
         double particle_size = particle->get_size();
@@ -83,10 +80,11 @@ void PhysicsSolver::update_extraction(double dt) {
         size_t i = static_cast<size_t>(px / dx);
         size_t j = static_cast<size_t>(py / dx);
 
-        if (i >= nx || j >= ny) continue;
+        if (i >= nx || j >= ny)
+            continue;
 
         auto [vx, vy] = water_flow_->get_velocity(i, j);
-        double flow_magnitude = std::sqrt(vx*vx + vy*vy);
+        double flow_magnitude = std::sqrt(vx * vx + vy * vy);
 
         double current_concentration = particle->get_concentration();
         double extraction_state = particle->get_extraction_state();
@@ -95,8 +93,8 @@ void PhysicsSolver::update_extraction(double dt) {
         double flow_enhancement = std::sqrt(1.0 + flow_magnitude);
         effective_rate *= flow_enhancement;
 
-        double concentration_gradient = params_.saturation_concentration *
-                                     (1.0 - extraction_state) - current_concentration;
+        double concentration_gradient =
+            params_.saturation_concentration * (1.0 - extraction_state) - current_concentration;
 
         double delta_concentration = effective_rate * concentration_gradient * dt;
 
@@ -106,17 +104,16 @@ void PhysicsSolver::update_extraction(double dt) {
 }
 
 void PhysicsSolver::modify_local_flow(size_t i, size_t j, double particle_size,
-                                    double extraction_state) {
+                                      double extraction_state) {
     auto [vx, vy] = water_flow_->get_velocity(i, j);
-    double resistance_factor = params_.flow_resistance * particle_size *
-                             (1.0 - extraction_state);
+    double resistance_factor = params_.flow_resistance * particle_size * (1.0 - extraction_state);
     vy *= (1.0 - resistance_factor);
     water_flow_->set_velocity(i, j, vx, vy);
 }
 
 void PhysicsSolver::update_particle_state(const std::shared_ptr<ICoffeeParticle>& particle,
-                                        double vx, double vy) {
-    double flow_magnitude = std::sqrt(vx*vx + vy*vy);
+                                          double vx, double vy) {
+    double flow_magnitude = std::sqrt(vx * vx + vy * vy);
     particle->apply_force(0, params_.particle_drag * flow_magnitude);
 }
 

@@ -1,15 +1,11 @@
 #include "sprosim/CoffeeParticle.h"
 #include <algorithm>
-//#include <cmath>
+// #include <cmath>
 
 namespace sprosim {
 
-CoffeeParticle::CoffeeParticle(double x, double y, double radius):
-    position_{x, y},
-    radius_(radius),
-    extraction_state_(0.0),
-    concentration_(0.0)
-{}
+CoffeeParticle::CoffeeParticle(double x, double y, double radius)
+    : position_{x, y}, radius_(radius), extraction_state_(0.0), concentration_(0.0) {}
 
 std::pair<double, double> CoffeeParticle::get_position() const {
     return {position_[0], position_[1]};
@@ -36,12 +32,12 @@ void CoffeeParticle::apply_force(double fx, double fy) {
     // Simple force application - will be expanded later
     // TODO: Develop more complex force physics
     const double dt = 0.001;  // 1ms timestep
-    const double mass = 1e-6;  // 1mg particle mass
-    
+    const double mass = 1e-6; // 1mg particle mass
+
     // F = ma -> a = F/m
     double ax = fx / mass;
     double ay = fy / mass;
-    
+
     // Update position using simple Euler integration
     position_[0] += 0.5 * ax * dt * dt;
     position_[1] += 0.5 * ay * dt * dt;

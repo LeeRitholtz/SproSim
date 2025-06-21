@@ -1,11 +1,11 @@
-#include <catch2/catch_test_macros.hpp>
-#include <catch2/matchers/catch_matchers_floating_point.hpp>
-#include "sprosim/PhysicsSolver.h"
-#include "sprosim/CoffeeBed.h"
 #include "../mocks/MockCoffeeParticle.h"
 #include "../mocks/MockWaterFlow.h"
-//#include <iostream>
-//#include <cmath>
+#include "sprosim/CoffeeBed.h"
+#include "sprosim/PhysicsSolver.h"
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
+// #include <iostream>
+// #include <cmath>
 
 using namespace sprosim;
 using namespace sprosim::testing;
@@ -23,18 +23,16 @@ TEST_CASE("PhysicsSolver basic flow field test", "[physics]") {
 
     auto flow = std::make_shared<MockWaterFlow>(10, 20);
 
-    PhysicsSolver::Parameters params{
-        .permeability = 1e-12,
-        .fluid_viscosity = 1e-3,
-        .extraction_rate = 0.1,
-        .temperature = 368.15,
-        .inlet_pressure = 9e5,
-        .outlet_pressure = 1e5,
-        .particle_drag = 0.1,
-        .flow_resistance = 0.2,
-        .saturation_concentration = 0.2,
-        .temperature_factor = 0.01
-    };
+    PhysicsSolver::Parameters params{.permeability = 1e-12,
+                                     .fluid_viscosity = 1e-3,
+                                     .extraction_rate = 0.1,
+                                     .temperature = 368.15,
+                                     .inlet_pressure = 9e5,
+                                     .outlet_pressure = 1e5,
+                                     .particle_drag = 0.1,
+                                     .flow_resistance = 0.2,
+                                     .saturation_concentration = 0.2,
+                                     .temperature_factor = 0.01};
 
     PhysicsSolver solver(bed, flow, params);
 
@@ -54,18 +52,16 @@ TEST_CASE("PhysicsSolver extraction test", "[physics]") {
 
     auto flow = std::make_shared<MockWaterFlow>(10, 20);
 
-    PhysicsSolver::Parameters params{
-        .permeability = 1e-12,
-        .fluid_viscosity = 1e-3,
-        .extraction_rate = 0.1,
-        .temperature = 368.15,
-        .inlet_pressure = 9e5,
-        .outlet_pressure = 1e5,
-        .particle_drag = 0.1,
-        .flow_resistance = 0.2,
-        .saturation_concentration = 0.2,
-        .temperature_factor = 0.01
-    };
+    PhysicsSolver::Parameters params{.permeability = 1e-12,
+                                     .fluid_viscosity = 1e-3,
+                                     .extraction_rate = 0.1,
+                                     .temperature = 368.15,
+                                     .inlet_pressure = 9e5,
+                                     .outlet_pressure = 1e5,
+                                     .particle_drag = 0.1,
+                                     .flow_resistance = 0.2,
+                                     .saturation_concentration = 0.2,
+                                     .temperature_factor = 0.01};
 
     PhysicsSolver solver(bed, flow, params);
 
