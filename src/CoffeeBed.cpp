@@ -1,12 +1,14 @@
 #include "sprosim/CoffeeBed.h"
 #include "sprosim/interfaces/IParticle.h"
+#include "sprosim/CoffeeParticle3D.h"
 #include <algorithm>
+#include <memory>
 
 namespace sprosim {
 
-CoffeeBed::CoffeeBed(double initial_mass_g, double bed_diameter_mm):
-    initial_mass_g_(initial_mass_g),
-    bed_diameter_(bed_diameter_mm / 1000.0),
+CoffeeBed::CoffeeBed(double initial_mass, double bed_diameter):
+    initial_mass_g_(initial_mass * 1000.0),  // Convert kg to g for internal storage
+    bed_diameter_(bed_diameter),  // Already in meters
     compaction_(1.0)
 {}
 
@@ -14,7 +16,7 @@ void CoffeeBed::add_particle(std::shared_ptr<ICoffeeParticle> particle) {
     particles_.push_back(particle);
 }
 
-const std::vector<std::shared_ptr<ICoffeeParticle>>& CoffeeBed::particles() const {
+const std::vector<std::shared_ptr<ICoffeeParticle>>& CoffeeBed::get_particles() const {
     return particles_;
 }
 
@@ -46,12 +48,24 @@ void CoffeeBed::update_compaction(double pressure_pa) {
 double CoffeeBed::get_bed_height() const {
     if (particles_.empty()) return 0.0;
 
-    auto [_, max_y] = particles_[0]->get_position();
+    double max_height = 0.0;
+    
     for (const auto& particle : particles_) {
-        auto [__, y] = particle->get_position();
-        max_y = std::max(max_y, y);
+        // Try to cast to 3D particle first
+        auto particle_3d = std::dynamic_pointer_cast<CoffeeParticle3D>(particle);
+        if (particle_3d) {
+            // For 3D particles, use Z coordinate (depth) as height
+            auto [x, y, z] = particle_3d->get_position_3d();
+            double particle_top = z + particle_3d->get_size() / 2.0;  // Include particle radius
+            max_height = std::max(max_height, particle_top);
+        } else {
+            // Fallback to 2D particle Y coordinate
+            auto [x, y] = particle->get_position();
+            max_height = std::max(max_height, y);
+        }
     }
-    return max_y;
+    
+    return max_height;
 }
 
 double CoffeeBed::get_porosity() const {

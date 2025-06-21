@@ -7,10 +7,10 @@ namespace sprosim {
 
 class CoffeeBed {
 public:
-    CoffeeBed(double initial_mass_g, double bed_diameter_mm);
+    CoffeeBed(double initial_mass, double bed_diameter);
     
     void add_particle(std::shared_ptr<ICoffeeParticle> particle);
-    const std::vector<std::shared_ptr<ICoffeeParticle>>& particles() const;
+    const std::vector<std::shared_ptr<ICoffeeParticle>>& get_particles() const;
     
     double get_compaction() const;
     double get_diameter() const;

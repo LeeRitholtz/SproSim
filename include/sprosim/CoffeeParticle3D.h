@@ -99,18 +99,30 @@ public:
      */
     double get_local_packing_density(const std::vector<CoffeeParticle3D>& neighbors, 
                                    double search_radius) const;
+    
+    /**
+     * @brief Get particle mass
+     * @return Particle mass in kg
+     */
+    double get_mass() const;
 
 private:
-    std::array<double, 3> position_;     // [x, y, z] coordinates in meters
-    double radius_;                      // Particle radius in meters
-    double extraction_state_;            // Extraction progress (0-1)
-    double concentration_;               // Local dissolved concentration [kg/m³]
-    std::array<double, 3> velocity_;     // Particle velocity [m/s] for physics
+    std::array<double, 3> position;     // [x, y, z] coordinates in meters
+    double radius;                      // Particle radius in meters
+    double extraction_state;            // Extraction progress (0-1)
+    double concentration;               // Local dissolved concentration [kg/m³]
+    std::array<double, 3> velocity;     // Particle velocity [m/s] for physics
     
     // Physical constants
     static constexpr double max_extractable_ = 0.22;  // 22% extractable content
     static constexpr double particle_density_ = 1300.0; // kg/m³ (coffee density)
     static constexpr double pi_ = 3.14159265358979323846;
+    
+    // Simulation constants
+    static constexpr double timestep_dt_ = 0.001;  // Integration timestep [s]
+    static constexpr double max_bed_depth_ = 0.02;  // Maximum bed depth [m] (20mm)
+    static constexpr double max_portafilter_radius_ = 0.029;  // Portafilter radius [m] (58mm diameter / 2)
+    static constexpr double velocity_damping_ = 0.95;  // Velocity damping factor for friction
     
     // Helper methods
     double calculate_mass() const;
@@ -124,14 +136,14 @@ private:
 namespace particle_3d_utils {
     
     /**
-     * @brief Generate realistic 3D particle distribution
+     * @brief Generate random 3D particle distribution
      * @param num_particles Number of particles to generate
      * @param bed_radius Portafilter radius [m]
      * @param bed_depth Coffee bed depth [m] 
      * @param size_distribution Particle size distribution parameters
      * @return Vector of 3D positioned particles
      */
-    std::vector<CoffeeParticle3D> generate_realistic_distribution(
+    std::vector<CoffeeParticle3D> generate_random_3d_distribution(
         int num_particles,
         double bed_radius,
         double bed_depth,

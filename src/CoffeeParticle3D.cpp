@@ -6,40 +6,40 @@
 namespace sprosim {
 
 CoffeeParticle3D::CoffeeParticle3D(double x, double y, double z, double radius)
-    : position_{x, y, z},
-      radius_(radius),
-      extraction_state_(0.0),
-      concentration_(0.0),
-      velocity_{0.0, 0.0, 0.0}
+    : position{x, y, z},
+      radius(radius),
+      extraction_state(0.0),
+      concentration(0.0),
+      velocity{0.0, 0.0, 0.0}
 {}
 
 std::pair<double, double> CoffeeParticle3D::get_position() const {
-    return {position_[0], position_[1]};
+    return {position[0], position[1]};
 }
 
 std::tuple<double, double, double> CoffeeParticle3D::get_position_3d() const {
-    return {position_[0], position_[1], position_[2]};
+    return {position[0], position[1], position[2]};
 }
 
 double CoffeeParticle3D::get_depth() const {
-    return position_[2];
+    return position[2];
 }
 
 double CoffeeParticle3D::get_size() const {
-    return radius_ * 2.0;
+    return radius * 2.0;
 }
 
 double CoffeeParticle3D::get_extraction_state() const {
-    return extraction_state_;
+    return extraction_state;
 }
 
 double CoffeeParticle3D::get_concentration() const {
-    return concentration_;
+    return concentration;
 }
 
 void CoffeeParticle3D::update_extraction(double delta_conc, double dt) {
-    concentration_ += delta_conc;
-    extraction_state_ = std::min(1.0, extraction_state_ + delta_conc / max_extractable_);
+    concentration += delta_conc;
+    extraction_state = std::min(1.0, extraction_state + delta_conc / max_extractable_);
 }
 
 void CoffeeParticle3D::apply_force(double fx, double fy) {
@@ -47,7 +47,7 @@ void CoffeeParticle3D::apply_force(double fx, double fy) {
 }
 
 void CoffeeParticle3D::apply_force_3d(double fx, double fy, double fz) {
-    const double dt = 0.001;  // 1ms timestep
+    const double dt = timestep_dt_;  // 1ms timestep
     double mass = calculate_mass();
     
     // F = ma -> a = F/m
@@ -56,48 +56,48 @@ void CoffeeParticle3D::apply_force_3d(double fx, double fy, double fz) {
     double az = fz / mass;
     
     // Update velocity
-    velocity_[0] += ax * dt;
-    velocity_[1] += ay * dt;
-    velocity_[2] += az * dt;
+    velocity[0] += ax * dt;
+    velocity[1] += ay * dt;
+    velocity[2] += az * dt;
     
     // Update position using Verlet integration
-    position_[0] += velocity_[0] * dt + 0.5 * ax * dt * dt;
-    position_[1] += velocity_[1] * dt + 0.5 * ay * dt * dt;
-    position_[2] += velocity_[2] * dt + 0.5 * az * dt * dt;
+    position[0] += velocity[0] * dt + 0.5 * ax * dt * dt;
+    position[1] += velocity[1] * dt + 0.5 * ay * dt * dt;
+    position[2] += velocity[2] * dt + 0.5 * az * dt * dt;
     
     // Apply boundary constraints
     apply_boundary_constraints();
 }
 
 void CoffeeParticle3D::update_position_3d(double dx, double dy, double dz) {
-    position_[0] += dx;
-    position_[1] += dy;
-    position_[2] += dz;
+    position[0] += dx;
+    position[1] += dy;
+    position[2] += dz;
     apply_boundary_constraints();
 }
 
 void CoffeeParticle3D::set_position_3d(double x, double y, double z) {
-    position_[0] = x;
-    position_[1] = y;
-    position_[2] = z;
+    position[0] = x;
+    position[1] = y;
+    position[2] = z;
     apply_boundary_constraints();
 }
 
 double CoffeeParticle3D::get_volume() const {
-    return (4.0 / 3.0) * pi_ * radius_ * radius_ * radius_;
+    return (4.0 / 3.0) * pi_ * radius * radius * radius;
 }
 
 double CoffeeParticle3D::distance_to(const CoffeeParticle3D& other) const {
     auto [ox, oy, oz] = other.get_position_3d();
-    double dx = position_[0] - ox;
-    double dy = position_[1] - oy;
-    double dz = position_[2] - oz;
+    double dx = position[0] - ox;
+    double dy = position[1] - oy;
+    double dz = position[2] - oz;
     return std::sqrt(dx * dx + dy * dy + dz * dz);
 }
 
 bool CoffeeParticle3D::overlaps_with(const CoffeeParticle3D& other) const {
     double distance = distance_to(other);
-    double combined_radius = radius_ + other.radius_;
+    double combined_radius = radius + other.radius;
     return distance < combined_radius;
 }
 
@@ -117,39 +117,43 @@ double CoffeeParticle3D::get_local_packing_density(
     return particle_volume_sum / search_volume;
 }
 
-double CoffeeParticle3D::calculate_mass() const {
+double CoffeeParticle3D::get_mass() const {
     return particle_density_ * get_volume();
+}
+
+double CoffeeParticle3D::calculate_mass() const {
+    return get_mass();
 }
 
 void CoffeeParticle3D::apply_boundary_constraints() {
     // Ensure particle stays within reasonable bounds
     // Z should be non-negative (above bed bottom)
-    position_[2] = std::max(0.0, position_[2]);
+    position[2] = std::max(0.0, position[2]);
     
     // Limit maximum depth (prevent particles from falling through bed)
-    position_[2] = std::min(0.02, position_[2]); // 20mm max depth
+    position[2] = std::min(max_bed_depth_, position[2]); // 20mm max depth
     
     // Radial constraint (stay within portafilter)
-    double r = std::sqrt(position_[0] * position_[0] + position_[1] * position_[1]);
-    const double max_radius = 0.029; // 58mm diameter / 2
+    double r = std::sqrt(position[0] * position[0] + position[1] * position[1]);
+    const double max_radius = max_portafilter_radius_; // 58mm diameter / 2
     if (r > max_radius) {
         double scale = max_radius / r;
-        position_[0] *= scale;
-        position_[1] *= scale;
+        position[0] *= scale;
+        position[1] *= scale;
     }
 }
 
 void CoffeeParticle3D::update_physics_state(double dt) {
     // Apply damping to velocity (friction)
-    const double damping = 0.95;
-    velocity_[0] *= damping;
-    velocity_[1] *= damping;
-    velocity_[2] *= damping;
+    const double damping = velocity_damping_;
+    velocity[0] *= damping;
+    velocity[1] *= damping;
+    velocity[2] *= damping;
 }
 
 namespace particle_3d_utils {
 
-std::vector<CoffeeParticle3D> generate_realistic_distribution(
+std::vector<CoffeeParticle3D> generate_random_3d_distribution(
     int num_particles,
     double bed_radius,
     double bed_depth,
@@ -166,9 +170,9 @@ std::vector<CoffeeParticle3D> generate_realistic_distribution(
     double mean_size = (size_range.first + size_range.second) / 2.0;
     std::lognormal_distribution<double> size_dist(std::log(mean_size), 0.3);
     
-    // Position distributions
-    std::uniform_real_distribution<double> angle_dist(0.0, 2.0 * M_PI);
-    std::uniform_real_distribution<double> radius_dist(0.0, 1.0);
+    // Position distributions - using normal distribution for X,Y coordinates
+    std::normal_distribution<double> x_dist(0.0, bed_radius * 0.3);
+    std::normal_distribution<double> y_dist(0.0, bed_radius * 0.3);
     std::uniform_real_distribution<double> depth_dist(0.0, bed_depth);
     
     for (int i = 0; i < num_particles; i++) {
@@ -177,14 +181,17 @@ std::vector<CoffeeParticle3D> generate_realistic_distribution(
         particle_size = std::clamp(particle_size, size_range.first, size_range.second);
         double radius = particle_size / 2.0;
         
-        // Generate 3D position
-        double r_fraction = std::sqrt(radius_dist(gen)); // Square root for uniform area distribution
-        double r = bed_radius * r_fraction;
-        double theta = angle_dist(gen);
-        double z = depth_dist(gen);
+        // Generate 3D position with normal distribution for X,Y
+        double x, y, r;
+        int attempts = 0;
+        do {
+            x = x_dist(gen);
+            y = y_dist(gen);
+            r = std::sqrt(x * x + y * y);
+            attempts++;
+        } while (r > bed_radius && attempts < 100); // Keep within portafilter bounds
         
-        double x = r * std::cos(theta);
-        double y = r * std::sin(theta);
+        double z = depth_dist(gen);
         
         // Size stratification: larger particles tend to settle deeper
         double size_factor = (particle_size - size_range.first) / (size_range.second - size_range.first);
@@ -221,7 +228,7 @@ void simulate_gravity_settling(
     for (int step = 0; step < num_steps; step++) {
         for (auto& particle : particles) {
             // Apply gravity force
-            double mass = particle.calculate_mass();
+            double mass = particle.get_mass();
             double gravity_force = mass * gravity_acceleration;
             
             // Apply force in positive Z direction (downward)
