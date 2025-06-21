@@ -77,7 +77,7 @@ void VTKExporter::export_simulation_state(const std::shared_ptr<CoffeeBed>& bed,
                                          int timestep) {
     std::stringstream ss;
     ss << base_filename << "_particles_" << std::setfill('0') << std::setw(6) << timestep << ".vtu";
-    export_particles(bed->particles(), ss.str(), timestep);
+    export_particles(bed->get_particles(), ss.str(), timestep);
     
     ss.str("");
     ss << base_filename << "_flow_" << std::setfill('0') << std::setw(6) << timestep << ".vts";
@@ -106,7 +106,7 @@ void VTKExporter::add_timestep_to_series(const std::shared_ptr<CoffeeBed>& bed,
     std::stringstream particles_filename;
     particles_filename << time_series_base_filename_ << "_particles_" 
                        << std::setfill('0') << std::setw(6) << timestep << ".vtu";
-    export_particles(bed->particles(), particles_filename.str(), timestep);
+    export_particles(bed->get_particles(), particles_filename.str(), timestep);
     
     // Export flow field
     std::stringstream flow_filename;

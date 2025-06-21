@@ -7,6 +7,7 @@ find_package(Catch2 3 REQUIRED)
 # Add test executable
 add_executable(sprosim_tests
     physics/PhysicsSolverTests.cpp
+    physics/CoffeeParticle3DTests.cpp
 )
 
 # Include directories

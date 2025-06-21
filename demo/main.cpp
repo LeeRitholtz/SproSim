@@ -77,7 +77,7 @@ private:
         
         std::cout << "  Dose: " << dose_grams << "g" << std::endl;
         std::cout << "  Portafilter diameter: " << portafilter_diameter_mm << "mm" << std::endl;
-        std::cout << "  Total particles: " << bed->particles().size() << std::endl;
+        std::cout << "  Total particles: " << bed->get_particles().size() << std::endl;
         std::cout << "  Initial bed height: " << std::fixed << std::setprecision(2) 
                   << bed->get_bed_height() * 1000 << "mm" << std::endl;
         std::cout << "  Initial porosity: " << std::fixed << std::setprecision(3) 
@@ -237,7 +237,7 @@ private:
         std::cout << std::endl;
         
         // Particle analysis
-        const auto& particles = bed->particles();
+        const auto& particles = bed->get_particles();
         double min_extraction = 1.0, max_extraction = 0.0, avg_extraction = 0.0;
         
         for (const auto& particle : particles) {

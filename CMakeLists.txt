@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_library(sprosim
     src/CoffeeBed.cpp
     src/CoffeeParticle.cpp
+    src/CoffeeParticle3D.cpp
     src/WaterFlow.cpp
     src/PhysicsSolver.cpp
 )

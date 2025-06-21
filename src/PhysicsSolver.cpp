@@ -51,7 +51,7 @@ void PhysicsSolver::update_flow_field() {
 }
 
 void PhysicsSolver::handle_particle_interaction() {
-    for (const auto& particle : coffee_bed_->particles()) {
+    for (const auto& particle : coffee_bed_->get_particles()) {
         auto [px, py] = particle->get_position();
         const auto [nx, ny] = water_flow_->get_grid_dimensions();
         const double dx = water_flow_->get_cell_size();
@@ -75,7 +75,7 @@ void PhysicsSolver::handle_particle_interaction() {
 void PhysicsSolver::update_extraction(double dt) {
     double temp_factor = calculate_temperature_factor();
 
-    for (const auto& particle : coffee_bed_->particles()) {
+    for (const auto& particle : coffee_bed_->get_particles()) {
         auto [px, py] = particle->get_position();
         const auto [nx, ny] = water_flow_->get_grid_dimensions();
         const double dx = water_flow_->get_cell_size();

@@ -3,10 +3,10 @@
 #include <iomanip>
 #include <vector>
 #include <cmath>
-#include <random>
 
 #include "sprosim/CoffeeBed.h"
 #include "sprosim/CoffeeParticle.h"
+#include "sprosim/CoffeeParticle3D.h"
 #include "sprosim/WaterFlow.h"
 #include "sprosim/PhysicsSolver.h"
 
@@ -15,6 +15,7 @@
 #endif
 
 using namespace sprosim;
+using namespace sprosim::particle_3d_utils;
 
 class RealisticEspressoDemo {
 public:
@@ -52,76 +53,42 @@ private:
         
         auto bed = std::make_shared<CoffeeBed>(dose_grams, portafilter_diameter_mm);
         
-        // Realistic particle size distribution (log-normal)
-        std::cout << "Generating realistic particle size distribution..." << std::endl;
+        // Use enhanced 3D particle distribution with normal X,Y positioning
+        std::cout << "Generating realistic 3D particle distribution with normal spatial distribution..." << std::endl;
         
-        // Setup random number generation
-        std::random_device rd;
-        std::mt19937 gen(42);  // Fixed seed for reproducibility
-        
-        // Log-normal distribution for particle sizes (200-800 microns, peak at ~400)
-        std::lognormal_distribution<double> size_dist(std::log(400e-6), 0.3);
-        
-        // Uniform distributions for realistic positioning
         double bed_radius = portafilter_diameter_mm / 2000.0; // Convert to meters
         double bed_depth = bed_depth_mm / 1000.0; // Convert to meters
         
-        std::uniform_real_distribution<double> angle_dist(0.0, 2.0 * M_PI);
-        std::uniform_real_distribution<double> radius_frac_dist(0.0, 1.0);
-        std::uniform_real_distribution<double> depth_dist(0.0, bed_depth);
-        
         int total_particles = 500; // More particles for realistic density
+        std::pair<double, double> size_range = {200e-6, 800e-6}; // 200-800 microns
         
-        std::cout << "Placing " << total_particles << " particles with random distribution..." << std::endl;
+        // Generate 3D particles with enhanced normal distribution for X,Y coordinates
+        auto particles_3d = generate_random_3d_distribution(total_particles, bed_radius, bed_depth, size_range);
         
-        for (int i = 0; i < total_particles; i++) {
-            // Generate realistic particle size (200-800 microns)
-            double particle_size = size_dist(gen);
-            particle_size = std::clamp(particle_size, 200e-6, 800e-6); // Clamp to realistic range
+        std::cout << "Generated " << particles_3d.size() << " particles with realistic spatial distribution..." << std::endl;
+        
+        // Convert 3D particles to 2D particles for the coffee bed
+        for (const auto& particle_3d : particles_3d) {
+            // Get 3D position and size from the enhanced distribution
+            auto [x, y, z] = particle_3d.get_position_3d();
+            double particle_size = particle_3d.get_size();
             
-            // Generate truly random position (no spiral!)
-            double r_fraction = std::sqrt(radius_frac_dist(gen)); // Square root for uniform area
-            double r = bed_radius * r_fraction;
-            double theta = angle_dist(gen);
-            double depth = depth_dist(gen);
+            // Use depth (z) as Y coordinate for 2D visualization
+            double y_2d = z;
             
-            // Convert to Cartesian coordinates
-            double x = r * std::cos(theta);
-            double y = depth; // Use depth as Y coordinate for visualization
-            
-            // Add size-based stratification (larger particles settle deeper)
-            double size_factor = (particle_size - 200e-6) / (800e-6 - 200e-6); // 0-1
-            y = y * (0.8 + 0.4 * size_factor); // Larger particles appear deeper
-            
-            // Simple overlap avoidance with clustering allowance
-            bool valid_position = true;
-            int overlap_count = 0;
-            for (const auto& existing_particle : bed->particles()) {
-                auto [ex, ey] = existing_particle->get_position();
-                double distance = std::sqrt((x - ex) * (x - ex) + (y - ey) * (y - ey));
-                if (distance < particle_size * 1.2) { // Allow realistic packing
-                    overlap_count++;
-                    if (overlap_count > 2) { // Allow some clustering
-                        valid_position = false;
-                        break;
-                    }
-                }
-            }
-            
-            if (valid_position) {
-                auto particle = std::make_shared<CoffeeParticle>(x, y, particle_size / 2.0);
-                bed->add_particle(particle);
-            }
+            // Create 2D particle from 3D data (X,Y,radius)
+            auto particle = std::make_shared<CoffeeParticle>(x, y_2d, particle_size / 2.0);
+            bed->add_particle(particle);
         }
         
         std::cout << "  Dose: " << dose_grams << "g" << std::endl;
         std::cout << "  Portafilter diameter: " << portafilter_diameter_mm << "mm" << std::endl;
         std::cout << "  Bed depth: " << bed_depth_mm << "mm" << std::endl;
-        std::cout << "  Total particles placed: " << bed->particles().size() << std::endl;
+        std::cout << "  Total particles placed: " << bed->get_particles().size() << std::endl;
         std::cout << "  Particle size range: 200-800 microns" << std::endl;
-        std::cout << "  Distribution: Log-normal (realistic grind)" << std::endl;
-        std::cout << "  Placement: RANDOM (no artificial spiral)" << std::endl;
-        std::cout << "  Size stratification: Larger particles settle deeper" << std::endl;
+        std::cout << "  Distribution: Log-normal size + Normal X,Y positioning" << std::endl;
+        std::cout << "  Placement: Enhanced 3D->2D with realistic clustering" << std::endl;
+        std::cout << "  Size stratification: Built into enhanced distribution" << std::endl;
         std::cout << "  Initial bed height: " << std::fixed << std::setprecision(2) 
                   << bed->get_bed_height() * 1000 << "mm" << std::endl;
         std::cout << "  Initial porosity: " << std::fixed << std::setprecision(3) 
@@ -298,7 +265,7 @@ private:
         std::cout << std::endl;
         
         // Particle analysis by depth layers
-        const auto& particles = bed->particles();
+        const auto& particles = bed->get_particles();
         
         // Analyze particles by depth layers (using Y coordinate as depth)
         std::vector<std::vector<double>> layer_extractions(3); // Top, middle, bottom layers
