@@ -9,7 +9,7 @@ namespace sprosim {
 CoffeeBed::CoffeeBed(double initial_mass, double bed_diameter)
     : initial_mass_g_(initial_mass * 1000.0), // Convert kg to g for internal storage
       bed_diameter_(bed_diameter),            // Already in meters
-      compaction_(1.0) {}
+      compaction_(1.0) {}                     // 1.0 = Not compacted at all
 
 void CoffeeBed::add_particle(std::shared_ptr<ICoffeeParticle> particle) {
     particles_.push_back(particle);
@@ -30,6 +30,10 @@ double CoffeeBed::get_diameter() const {
 double CoffeeBed::get_total_dissolved_solids() const {
     double tds = 0.0;
     for (const auto& particle : particles_) {
+        /* Assumption: Each particle contributes equally to the total mass
+         * TODO: Update particle creation to have different sizes. This would
+         *      be more realistic since there are always fines
+         */
         tds += particle->get_extraction_state() * (initial_mass_g_ / particles_.size());
     }
     return tds;
@@ -40,6 +44,11 @@ double CoffeeBed::get_extraction_yield() const {
 }
 
 void CoffeeBed::update_compaction(double pressure_pa) {
+    /* Provides a scaling factor for pressure_pa, which is in Pascals
+     *  TODO: This should just be in bars to begin with. No one would input
+     *      a number using Pascals. Pressure in bars is more familiar to
+     *      coffee people.
+     */
     const double k_compact = 1e-7;
     compaction_ = 1.0 + k_compact * pressure_pa;
 }
