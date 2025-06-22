@@ -1,6 +1,7 @@
 #include "sprosim/models/permeability/KozenyCarmanPermeabilityModel.h"
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
+#include <cmath>
 
 using namespace sprosim;
 
@@ -14,7 +15,11 @@ TEST_CASE("KozenyCarmanPermeabilityModel calculates effective permeability",
         for (auto porosity : porosities) {
             double k_eff = model.calculate_permeability(porosity);
             REQUIRE(k_eff > 0.0);
-            REQUIRE(k_eff <= base_permeability);
+
+            // Verify Kozeny-Carman formula: k = k₀ * φ³ / (1-φ)²
+            double expected =
+                base_permeability * std::pow(porosity, 3) / std::pow(1.0 - porosity, 2);
+            REQUIRE_THAT(k_eff, Catch::Matchers::WithinAbs(expected, 1e-15));
         }
     }
 
