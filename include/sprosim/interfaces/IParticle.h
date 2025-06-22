@@ -41,7 +41,7 @@ class IParticle {
 /**
  * @brief Specialized interface for coffee particles
  *
- * Extends the base particle interface with coffee-specific properties
+ * Extends the base particle interface with *coffee-specific* properties
  * and behaviors like extraction state and concentration tracking.
  * Handles interactions with water flow and extraction physics.
  */

@@ -95,6 +95,17 @@ class IWaterFlow : public IFlow {
      * effects and calculate extraction gradients.
      */
     virtual void add_concentration(size_t i, size_t j, double delta) = 0;
+
+    /**
+     * @brief Update pressure field over time
+     * @param dt Time step in seconds
+     * @param input_pressure Input pressure value [Pa]
+     *
+     * Updates the pressure distribution in the flow field based on
+     * input pressure and time evolution. Used to model pressure-driven
+     * flow and pressure gradients in the brewing simulation.
+     */
+    virtual void update_pressure(double dt, double input_pressure) = 0;
 };
 
 } // namespace sprosim
