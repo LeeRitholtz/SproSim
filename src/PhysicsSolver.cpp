@@ -1,11 +1,25 @@
 #include "sprosim/PhysicsSolver.h"
+#include "sprosim/interfaces/IFlowModel.h"
+#include "sprosim/interfaces/IPermeabilityModel.h"
+#include "sprosim/models/flow/DarcyFlowModel.h"
+#include "sprosim/models/permeability/ConstantPermeabilityModel.h"
 #include <cmath>
 
 namespace sprosim {
 
 PhysicsSolver::PhysicsSolver(std::shared_ptr<CoffeeBed> bed, std::shared_ptr<IWaterFlow> flow,
+                             Parameters params, std::shared_ptr<IPermeabilityModel> perm_model,
+                             std::shared_ptr<IFlowModel> flow_model)
+    : coffee_bed_(bed), water_flow_(flow), params_(params), permeability_model_(perm_model),
+      flow_model_(flow_model) {}
+
+// Backwards-compatible constructor with default models
+PhysicsSolver::PhysicsSolver(std::shared_ptr<CoffeeBed> bed, std::shared_ptr<IWaterFlow> flow,
                              Parameters params)
-    : coffee_bed_(bed), water_flow_(flow), params_(params) {}
+    : coffee_bed_(bed), water_flow_(flow), params_(params),
+      permeability_model_(std::make_shared<ConstantPermeabilityModel>(params.permeability)),
+      flow_model_(std::make_shared<DarcyFlowModel>(
+          std::make_shared<ConstantPermeabilityModel>(params.permeability))) {}
 
 void PhysicsSolver::simulate_step(double dt) {
     update_flow_field();
@@ -13,37 +27,12 @@ void PhysicsSolver::simulate_step(double dt) {
     update_extraction(dt);
 }
 
-double PhysicsSolver::calculate_effective_permeability() const {
-    double porosity = coffee_bed_->get_porosity();
-    return params_.permeability * std::pow(porosity, 3) / std::pow(1.0 - porosity, 2);
+void PhysicsSolver::update_flow_field() {
+    flow_model_->update_velocity(water_flow_, coffee_bed_, params_);
 }
 
 double PhysicsSolver::calculate_temperature_factor() const {
     return std::exp(params_.temperature_factor * (params_.temperature - 373.15));
-}
-
-void PhysicsSolver::update_flow_field() {
-    const auto [nx, ny] = water_flow_->get_grid_dimensions();
-    const double bed_height = coffee_bed_->get_bed_height();
-    if (bed_height <= 0.0)
-        return;
-
-    // Calculate pressure gradient
-    double delta_p = params_.outlet_pressure - params_.inlet_pressure;
-    double dp_dy = delta_p / bed_height;
-
-    // Use class method for consistent permeability calculation
-    double effective_k = calculate_effective_permeability();
-
-    // Calculate velocity in single step to maintain precision
-    double velocity = -(effective_k / params_.fluid_viscosity) * dp_dy;
-
-    // Set uniform velocity field
-    for (size_t i = 0; i < nx; ++i) {
-        for (size_t j = 0; j < ny; ++j) {
-            water_flow_->set_velocity(i, j, 0.0, velocity);
-        }
-    }
 }
 
 void PhysicsSolver::handle_particle_interaction() {
