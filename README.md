@@ -285,6 +285,15 @@ cd build
 
 This task is available as **Run Catch2 Tests** in your IDE.
 
+### Alternative Method: Using run_tests.sh Script
+To simplify running tests, you can use the included script at the project root:
+
+```bash
+./run_tests.sh
+```
+
+This script will build the project and run all tests from the correct build directory, ensuring proper test discovery and output.
+
 ### Understanding Test Output
 - CTest output summarizes overall test results.
 - Running the Catch2 executable directly provides full test case details and assertion failures.
