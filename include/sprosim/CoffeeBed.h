@@ -1,4 +1,5 @@
 #pragma once
+#include "sprosim/interfaces/ICoffeeBed.h"
 #include "sprosim/interfaces/IParticle.h"
 #include <memory>
 #include <vector>
@@ -20,7 +21,7 @@ namespace sprosim {
  * double yield = bed.get_extraction_yield();
  * ```
  */
-class CoffeeBed {
+class CoffeeBed : public ICoffeeBed {
   public:
     CoffeeBed(double initial_mass, double bed_diameter);
 
@@ -31,8 +32,8 @@ class CoffeeBed {
     double get_diameter() const;
     double get_total_dissolved_solids() const;
     double get_extraction_yield() const;
-    double get_bed_height() const;
-    double get_porosity() const;
+    double get_bed_height() const override;
+    double get_porosity() const override;
 
     void update_compaction(double pressure_pa);
 

@@ -1,6 +1,6 @@
 #pragma once
-#include "sprosim/CoffeeBed.h"
 #include "sprosim/Parameters.h"
+#include "sprosim/interfaces/ICoffeeBed.h"
 #include "sprosim/interfaces/IFlow.h"
 #include "sprosim/interfaces/IFlowModel.h"
 #include "sprosim/interfaces/IPermeabilityModel.h"
@@ -19,7 +19,7 @@ class DarcyFlowModel : public IFlowModel {
     explicit DarcyFlowModel(std::shared_ptr<IPermeabilityModel> permeability_model)
         : permeability_model_(permeability_model) {}
 
-    void update_velocity(std::shared_ptr<IWaterFlow> water_flow, std::shared_ptr<CoffeeBed> bed,
+    void update_velocity(std::shared_ptr<IWaterFlow> water_flow, std::shared_ptr<ICoffeeBed> bed,
                          const Parameters& params) override {
 
         auto [nx, ny] = water_flow->get_grid_dimensions();

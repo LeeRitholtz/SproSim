@@ -4,7 +4,7 @@
 
 namespace sprosim {
 
-class CoffeeBed;
+class ICoffeeBed;
 class IWaterFlow;
 
 /**
@@ -21,11 +21,11 @@ class IFlowModel {
     /**
      * @brief Update the velocity field for water flow through the coffee bed
      * @param water_flow Pointer to the water flow grid interface
-     * @param bed Pointer to the coffee bed
+     * @param bed Pointer to the coffee bed interface
      * @param params Simulation parameters containing physical constants and settings
      */
     virtual void update_velocity(std::shared_ptr<IWaterFlow> water_flow,
-                                 std::shared_ptr<CoffeeBed> bed, const Parameters& params) = 0;
+                                 std::shared_ptr<ICoffeeBed> bed, const Parameters& params) = 0;
 };
 
 } // namespace sprosim
