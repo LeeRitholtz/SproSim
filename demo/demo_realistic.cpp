@@ -122,13 +122,15 @@ class RealisticEspressoDemo {
         return flow;
     }
 
+#include "sprosim/Parameters.h"
+
     std::shared_ptr<PhysicsSolver> create_physics_solver(std::shared_ptr<CoffeeBed> bed,
                                                          std::shared_ptr<WaterFlow> flow) {
 
         std::cout << "Setting up enhanced physics solver..." << std::endl;
 
         // Realistic espresso brewing parameters
-        PhysicsSolver::Parameters params{
+        Parameters params{
             .permeability = 8e-13,            // Slightly lower for finer grind
             .fluid_viscosity = 1e-3,          // Water viscosity at 95°C [Pa·s]
             .extraction_rate = 0.08,          // Higher rate for finer particles

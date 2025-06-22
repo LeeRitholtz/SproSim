@@ -110,7 +110,7 @@ class EspressoBrewingDemo {
         std::cout << "Setting up physics solver..." << std::endl;
 
         // Realistic espresso brewing parameters
-        PhysicsSolver::Parameters params{
+        sprosim::Parameters params{
             .permeability = 1e-12,            // Typical coffee bed permeability [m²]
             .fluid_viscosity = 1e-3,          // Water viscosity at 95°C [Pa·s]
             .extraction_rate = 0.05,          // Extraction rate constant [1/s]

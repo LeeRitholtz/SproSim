@@ -40,6 +40,27 @@ brew install --cask paraview
 
 ## Building the Project
 
+Clean and build the project from scratch with the following steps:
+
+1. **Clean build directory** (optional but recommended for fresh start):
+   ```bash
+   rm -rf build
+   ```
+
+2. **Configure and build the project** with CMake:
+   ```bash
+   mkdir -p build
+   cd build
+   cmake .. -DCMAKE_BUILD_TYPE=Release
+   cmake --build . --config Release
+   ```
+
+3. **Run tests** using one of the methods below.
+
+You can automate these steps using the IDE tasks:
+- **Clean Build** — removes the build directory
+- **Build Project** — configures and builds the project in Release mode
+
 ### Prerequisites Check
 
 Before building, ensure you have all required dependencies:
@@ -57,6 +78,8 @@ g++ --version    # or clang++ --version
 ```
 
 ### Step-by-Step Build Process
+
+(Section removed for conciseness; see above summary.)
 
 1. **Clone and navigate to the project:**
    ```bash
@@ -106,6 +129,8 @@ g++ --version    # or clang++ --version
    ```
 
 ### Build Verification
+
+After building, verify your build with tests as described in the "Running Tests" section.
 
 After building, you should see these executables in your build directory:
 - `sprosim_demo` - Demo application
@@ -236,7 +261,35 @@ Brewing Quality Assessment:
 6. Add velocity vectors to visualize water flow
 ```
 
-### Running Tests
+## Running Tests
+
+Two ways to run tests after building:
+
+### Method 1: Using CTest (Recommended)
+Run all tests via CTest from the build directory for a quick pass/fail summary and test discovery:
+
+```bash
+cd build
+ctest --output-on-failure
+```
+
+You can also run this via the IDE task **Run CTest Runner**.
+
+### Method 2: Direct Test Execution
+Run the Catch2 test executable directly for detailed output and debug information:
+
+```bash
+cd build
+./tests/sprosim_tests
+```
+
+This task is available as **Run Catch2 Tests** in your IDE.
+
+### Understanding Test Output
+- CTest output summarizes overall test results.
+- Running the Catch2 executable directly provides full test case details and assertion failures.
+
+Ensure you run all tests after building to verify project correctness.
 
 #### Method 1: Using CTest (Recommended)
 ```bash
