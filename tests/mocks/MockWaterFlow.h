@@ -39,6 +39,10 @@ class MockWaterFlow : public IWaterFlow {
         concentrations_[j * nx_ + i] += delta;
     }
 
+    void update_pressure(double dt, double input_pressure) override {
+        // no-op for mock
+    }
+
   private:
     size_t nx_, ny_;
     std::vector<double> velocities_;

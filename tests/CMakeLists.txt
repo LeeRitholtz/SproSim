@@ -8,6 +8,9 @@ find_package(Catch2 3 REQUIRED)
 add_executable(sprosim_tests
     physics/PhysicsSolverTests.cpp
     physics/CoffeeParticle3DTests.cpp
+    permeability/test_KozenyCarmanPermeabilityModel.cpp
+    permeability/test_ConstantPermeabilityModel.cpp
+    flow/test_DarcyFlowModel.cpp
 )
 
 # Include directories
