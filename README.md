@@ -1,6 +1,11 @@
-# SproSim - Coffee Brewing Simulation Library
+# SproSim - A "Vibe Coded" Espresso Extraction Simulation Library
 
-SproSim is a C++ library for simulating specialty coffee brewing processes, with a focus on espresso extraction physics. The library models coffee particle extraction, water flow dynamics, and bed compaction to provide insights into brewing quality and optimization.
+SproSim is a C++ library for simulating the espresso brewing processes, with a focus on extraction physics. The library models coffee particle extraction, water flow dynamics, and bed compaction to provide insights into brewing quality and optimization.
+
+### *Disclaimer & Thoughts*:
+This project is very experimental and well over 85% of the code (and docs) has been developed by an LLM! The code base is basically a disaster right now, but it has been slowly improving as I torture the LLM into respecting project guidelines, teaching it that every feature should not be a complete project re-write, and fighting with it over silly design choices. The ultimate goal is to see if I can build an realistic simulation with the LLM doing 100% of the development.
+
+The bottom line is that, right now, building a significant project with an AI coding agent/assistent isn't as simple as writing "build me an espresso extraction physics simulation library. thx." I believe that it would be very hard to be productive on a real project if you don't have experience with the domain you're building in as well as the languages and tools being used. You also do need to know your code base, even if most of it is generated, because it can very quickly become an unscalable and unmaintainable mess (have it generate UML diagrams!). A clean and clear architecture approach definitely helps the LLM perform better because it provides natural constraints. It would be interesting to experiment with what combination of system design patterns, languages, and tools lend themselves best to LLM co-development. Overall, I'd say building this project with an LLM has been an awesome experience so far. It's certainly a very powerful productivity multiplier and it is definitely a skill that improves over time with increased reps.
 
 ## Features
 
@@ -97,10 +102,10 @@ g++ --version    # or clang++ --version
    ```bash
    # Debug build (default, includes debugging symbols)
    cmake ..
-   
+
    # Or Release build (optimized for performance)
    cmake .. -DCMAKE_BUILD_TYPE=Release
-   
+
    # Or specify custom install prefix
    cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
    ```
@@ -109,10 +114,10 @@ g++ --version    # or clang++ --version
    ```bash
    # Build all targets (library, demo, tests)
    cmake --build .
-   
+
    # Or build with multiple cores for faster compilation
    cmake --build . --parallel 4
-   
+
    # Or build specific targets only
    cmake --build . --target sprosim          # Library only
    cmake --build . --target sprosim_demo     # Demo only
@@ -123,7 +128,7 @@ g++ --version    # or clang++ --version
    ```bash
    # Install to system directories (may require sudo)
    cmake --build . --target install
-   
+
    # Or install to custom location
    cmake --install . --prefix /path/to/install
    ```
@@ -209,7 +214,7 @@ cd SproSim
 The demo runs a complete espresso brewing simulation featuring:
 
 - **Coffee Setup**: 18g dose in 58mm portafilter with 350 particles
-- **Grind Distribution**: Realistic particle sizes from 200-800 microns  
+- **Grind Distribution**: Realistic particle sizes from 200-800 microns
 - **Brewing Parameters**: 9 bar pressure, 95°C temperature
 - **Simulation Duration**: 30 seconds with 10ms time steps
 - **Real-time Monitoring**: Progress, extraction yield, and TDS tracking
@@ -385,7 +390,7 @@ The simulation automatically exports VTK data files that can be visualized in Pa
 
 3. **Visualize particles** with extraction colors:
    - Filters → Glyph (to make particles visible as spheres)
-   - Set Glyph Type to "Sphere" 
+   - Set Glyph Type to "Sphere"
    - Set Scale Factor to 5.0
    - Color by "extraction_state" (blue = unextracted, brown = extracted)
 
@@ -533,7 +538,7 @@ The model is suitable for:
    ```bash
    # Only rebuild changed files
    cmake --build .
-   
+
    # Or use make directly (if using Unix Makefiles generator)
    make -j4
    ```
@@ -542,7 +547,7 @@ The model is suitable for:
    ```bash
    # Quick test run
    ctest
-   
+
    # Run tests with debugging info
    ctest --verbose --output-on-failure
    ```
