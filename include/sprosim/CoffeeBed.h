@@ -35,11 +35,11 @@ class CoffeeBed : public ICoffeeBed {
     double get_bed_height() const override;
     double get_porosity() const override;
 
-    void update_compaction(double pressure_pa);
+    void update_compaction(double pressure);
 
   private:
     std::vector<std::shared_ptr<ICoffeeParticle>> particles_;
-    double initial_mass_g_;
+    double initial_mass_;
     double bed_diameter_;
     double compaction_;
 };
