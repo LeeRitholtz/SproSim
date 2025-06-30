@@ -35,7 +35,7 @@ class WaterFlow : public IWaterFlow {
     void add_concentration(size_t i, size_t j, double delta) override;
 
     // Additional methods
-    void update_pressure(double dt, double input_pressure);
+    void update_pressure(double dt, double input_pressure) override;
     double pressure_at(size_t x, size_t y) const;
 
   private:
