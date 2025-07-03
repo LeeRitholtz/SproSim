@@ -1,6 +1,5 @@
 #include "sprosim/PhysicsSolver.h"
 #include "sprosim/interfaces/IFlowModel.h"
-#include "sprosim/interfaces/IPermeabilityModel.h"
 #include "sprosim/models/flow/DarcyFlowModel.h"
 #include "sprosim/models/permeability/ConstantPermeabilityModel.h"
 #include <cmath>
@@ -8,16 +7,13 @@
 namespace sprosim {
 
 PhysicsSolver::PhysicsSolver(std::shared_ptr<CoffeeBed> bed, std::shared_ptr<IWaterFlow> flow,
-                             Parameters params, std::shared_ptr<IPermeabilityModel> perm_model,
-                             std::shared_ptr<IFlowModel> flow_model)
-    : coffee_bed_(bed), water_flow_(flow), params_(params), permeability_model_(perm_model),
-      flow_model_(flow_model) {}
+                             Parameters params, std::shared_ptr<IFlowModel> flow_model)
+    : coffee_bed_(bed), water_flow_(flow), params_(params), flow_model_(flow_model) {}
 
 // Backwards-compatible constructor with default models
 PhysicsSolver::PhysicsSolver(std::shared_ptr<CoffeeBed> bed, std::shared_ptr<IWaterFlow> flow,
                              Parameters params)
     : coffee_bed_(bed), water_flow_(flow), params_(params),
-      permeability_model_(std::make_shared<ConstantPermeabilityModel>(params.permeability)),
       flow_model_(std::make_shared<DarcyFlowModel>(
           std::make_shared<ConstantPermeabilityModel>(params.permeability))) {}
 

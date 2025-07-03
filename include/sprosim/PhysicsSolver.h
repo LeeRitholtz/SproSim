@@ -4,7 +4,7 @@
 #include "sprosim/interfaces/IFlow.h"
 #include "sprosim/interfaces/IFlowModel.h"
 #include "sprosim/interfaces/IParticle.h"
-#include "sprosim/interfaces/IPermeabilityModel.h"
+
 #include <memory>
 
 namespace sprosim {
@@ -33,8 +33,7 @@ namespace sprosim {
 class PhysicsSolver {
   public:
     PhysicsSolver(std::shared_ptr<CoffeeBed> bed, std::shared_ptr<IWaterFlow> flow,
-                  Parameters params, std::shared_ptr<IPermeabilityModel> perm_model,
-                  std::shared_ptr<IFlowModel> flow_model);
+                  Parameters params, std::shared_ptr<IFlowModel> flow_model);
 
     // Backwards-compatible constructor with default models
     PhysicsSolver(std::shared_ptr<CoffeeBed> bed, std::shared_ptr<IWaterFlow> flow,
@@ -57,7 +56,6 @@ class PhysicsSolver {
     std::shared_ptr<IWaterFlow> water_flow_;
     Parameters params_;
 
-    std::shared_ptr<IPermeabilityModel> permeability_model_;
     std::shared_ptr<IFlowModel> flow_model_;
 };
 
