@@ -51,33 +51,25 @@ add_executable(sprosim_demo
     demo/main.cpp
 )
 
-# Add realistic demo executable
-add_executable(sprosim_demo_realistic
-    demo/demo_realistic.cpp
-)
+
 
 # Link demo with the library
 target_link_libraries(sprosim_demo PRIVATE
     sprosim
 )
 
-# Link realistic demo with the library
-target_link_libraries(sprosim_demo_realistic PRIVATE
-    sprosim
-)
+
 
 # Link with visualization library
 target_link_libraries(sprosim_demo PRIVATE sprosim_visualization)
-target_link_libraries(sprosim_demo_realistic PRIVATE sprosim_visualization)
+
 
 # Set include directories for demo
 target_include_directories(sprosim_demo PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-target_include_directories(sprosim_demo_realistic PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
+
 
 # Code formatting with clang-format
 find_program(CLANG_FORMAT_EXECUTABLE clang-format)
