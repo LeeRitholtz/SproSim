@@ -7,9 +7,9 @@
 namespace sprosim {
 
 CoffeeBed::CoffeeBed(double initial_mass, double bed_diameter)
-    : initial_mass_(initial_mass * 1000.0), // Convert kg to g for internal storage
-      bed_diameter_(bed_diameter),          // Already in meters
-      compaction_(1.0) {}                   // 1.0 = Not compacted at all
+    : initial_mass_(initial_mass), // grams
+      bed_diameter_(bed_diameter), // meters
+      compaction_(1.0) {}          // 1.0 = Not compacted at all
 
 void CoffeeBed::add_particle(std::shared_ptr<ICoffeeParticle> particle) {
     particles_.push_back(particle);

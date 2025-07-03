@@ -102,7 +102,7 @@ class CoffeeParticle3D : public ICoffeeParticle {
 
     /**
      * @brief Get particle mass
-     * @return Particle mass in kg
+     * @return Particle mass in grams
      */
     double get_mass() const;
 
@@ -114,8 +114,8 @@ class CoffeeParticle3D : public ICoffeeParticle {
     std::array<double, 3> velocity; // Particle velocity [m/s] for physics
 
     // Physical constants
-    static constexpr double max_extractable_ = 0.22;    // 22% extractable content
-    static constexpr double particle_density_ = 1300.0; // kg/m³ (coffee density)
+    static constexpr double max_extractable_ = 0.22;       // 22% extractable content
+    static constexpr double particle_density_ = 1300000.0; // g/m³ (coffee density)
     static constexpr double pi_ = 3.14159265358979323846;
 
     // Simulation constants
