@@ -1,11 +1,10 @@
 #pragma once
+#include "sprosim/CoffeeBed.h"
 #include "sprosim/Parameters.h"
+#include "sprosim/interfaces/IFlow.h"
 #include <memory>
 
 namespace sprosim {
-
-class ICoffeeBed;
-class IWaterFlow;
 
 /**
  * @brief Interface for solute transport models in the coffee brewing simulation
@@ -27,7 +26,7 @@ class ITransportModel {
      * @param dt Time step size [s]
      */
     virtual void update_extraction(std::shared_ptr<IWaterFlow> water_flow,
-                                   std::shared_ptr<ICoffeeBed> bed, const Parameters& params,
+                                   std::shared_ptr<CoffeeBed> bed, const Parameters& params,
                                    double dt) = 0;
 };
 

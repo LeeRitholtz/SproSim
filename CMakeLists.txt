@@ -12,6 +12,7 @@ add_library(sprosim
     src/CoffeeParticle3D.cpp
     src/WaterFlow.cpp
     src/PhysicsSolver.cpp
+    src/models/transport/LinearExtractionModel.cpp
 )
 
 # Set include directories for the library
