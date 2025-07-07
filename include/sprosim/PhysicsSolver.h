@@ -19,6 +19,9 @@ namespace sprosim {
  * complex interactions between flow resistance, extraction rates, and
  * temperature effects.
  *
+ * Uses pluggable transport models (ITransportModel) for customizable extraction
+ * physics, allowing different extraction kinetics implementations.
+ *
  * @example
  * ```cpp
  * PhysicsSolver::Parameters params{
@@ -27,17 +30,33 @@ namespace sprosim {
  *     .extraction_rate = 0.1,    // 1/s
  *     .temperature = 363.15      // K (90°C)
  * };
+ * // Using backwards-compatible constructor with default models
  * PhysicsSolver solver(bed, flow, params);
  * solver.simulate_step(0.01);  // 10ms timestep
  * ```
  */
 class PhysicsSolver {
   public:
+    /**
+     * @brief Constructor with explicit flow and transport models
+     * @param bed Coffee bed containing particles to simulate
+     * @param flow Water flow field for fluid dynamics
+     * @param params Physics parameters (permeability, temperature, etc.)
+     * @param flow_model Flow physics model (e.g., DarcyFlowModel)
+     * @param transport_model Extraction physics model (e.g., LinearExtractionModel)
+     */
     PhysicsSolver(std::shared_ptr<CoffeeBed> bed, std::shared_ptr<IWaterFlow> flow,
                   Parameters params, std::shared_ptr<IFlowModel> flow_model,
                   std::shared_ptr<ITransportModel> transport_model);
 
-    // Backwards-compatible constructor with default models
+    /**
+     * @brief Backwards-compatible constructor with default models
+     * @param bed Coffee bed containing particles to simulate
+     * @param flow Water flow field for fluid dynamics
+     * @param params Physics parameters (permeability, temperature, etc.)
+     *
+     * Uses default DarcyFlowModel and LinearExtractionModel automatically.
+     */
     PhysicsSolver(std::shared_ptr<CoffeeBed> bed, std::shared_ptr<IWaterFlow> flow,
                   Parameters params);
 

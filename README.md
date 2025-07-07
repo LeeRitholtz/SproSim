@@ -12,6 +12,7 @@ The bottom line is that, right now, building a significant project with an AI co
 - **Coffee Bed Modeling**: Realistic simulation of coffee grounds with particle size distribution
 - **Water Flow Physics**: Darcy flow through porous media with pressure-driven extraction
 - **Extraction Kinetics**: Temperature-dependent extraction with saturation effects
+- **Modular Transport Models**: Pluggable extraction physics via ITransportModel interface
 - **Particle Interactions**: Drag forces and bed compaction modeling
 - **Real-time Simulation**: Time-stepped physics solver for dynamic brewing analysis
 - **ParaView Visualization**: Export simulation data for 3D visualization and analysis
@@ -483,12 +484,69 @@ double extraction_yield = bed->get_extraction_yield();
 double tds = bed->get_total_dissolved_solids();
 ```
 
+### Using Custom Transport Models
+
+SproSim uses a modular transport model system that allows you to customize extraction physics. The `ITransportModel` interface defines how coffee compounds are extracted from particles into the water flow.
+
+#### Default Usage (Backwards Compatible)
+
+```cpp
+// Uses default LinearExtractionModel automatically
+PhysicsSolver solver(bed, flow, params);
+```
+
+#### Explicit Transport Model Usage
+
+```cpp
+#include "sprosim/interfaces/ITransportModel.h"
+#include "sprosim/models/transport/LinearExtractionModel.h"
+#include "sprosim/models/flow/DarcyFlowModel.h"
+#include "sprosim/models/permeability/ConstantPermeabilityModel.h"
+
+// Create transport model
+auto transport_model = std::make_shared<LinearExtractionModel>();
+
+// Create flow model
+auto flow_model = std::make_shared<DarcyFlowModel>(
+    std::make_shared<ConstantPermeabilityModel>(params.permeability));
+
+// Create solver with explicit models
+PhysicsSolver solver(bed, flow, params, flow_model, transport_model);
+```
+
+#### Available Transport Models
+
+- **`LinearExtractionModel`**: First-order extraction kinetics with:
+  - Temperature-dependent Arrhenius kinetics
+  - Flow-enhanced mass transfer
+  - Saturation concentration limiting
+  - Linear concentration gradient driving force
+
+#### Creating Custom Transport Models
+
+Implement the `ITransportModel` interface to create custom extraction physics:
+
+```cpp
+class MyTransportModel : public ITransportModel {
+public:
+    void update_extraction(std::shared_ptr<IWaterFlow> water_flow,
+                          std::shared_ptr<CoffeeBed> bed,
+                          const Parameters& params,
+                          double dt) override {
+        // Your custom extraction physics here
+    }
+};
+```
+
 ### Key Classes
 
 - **`CoffeeBed`**: Manages collection of coffee particles and bed properties
 - **`CoffeeParticle`**: Individual particle with extraction state and physics
 - **`WaterFlow`**: 2D flow field with velocity and concentration tracking
 - **`PhysicsSolver`**: Main simulation engine that couples all physics
+- **`ITransportModel`**: Interface for customizable extraction physics models
+- **`LinearExtractionModel`**: Default transport model with temperature-dependent extraction
+- **`IFlowModel`**: Interface for flow physics models (Darcy flow, etc.)
 
 ## Project Structure
 
