@@ -29,10 +29,15 @@ void LinearExtractionModel::update_extraction(std::shared_ptr<IWaterFlow> water_
         double flow_enhancement = std::sqrt(1.0 + flow_magnitude);
         effective_rate *= flow_enhancement;
 
-        double concentration_gradient =
-            params.saturation_concentration * (1.0 - extraction_state) - current_concentration;
+        // First-order kinetics: Rate proportional to remaining extractable material
+        double remaining_extractable = (1.0 - extraction_state);
 
-        double delta_concentration = effective_rate * concentration_gradient * dt;
+        // Simple extraction rate with temperature and flow enhancement
+        double extraction_rate = effective_rate * remaining_extractable;
+
+        // Convert to concentration units (particle max_extractable = 0.2)
+        double particle_max_extractable = 0.2;
+        double delta_concentration = extraction_rate * particle_max_extractable * dt;
 
         particle->update_extraction(delta_concentration, dt);
         water_flow->add_concentration(i, j, delta_concentration);
