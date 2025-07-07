@@ -4,6 +4,7 @@
 #include "sprosim/interfaces/IFlow.h"
 #include "sprosim/interfaces/IFlowModel.h"
 #include "sprosim/interfaces/IParticle.h"
+#include "sprosim/interfaces/ITransportModel.h"
 
 #include <memory>
 
@@ -33,7 +34,8 @@ namespace sprosim {
 class PhysicsSolver {
   public:
     PhysicsSolver(std::shared_ptr<CoffeeBed> bed, std::shared_ptr<IWaterFlow> flow,
-                  Parameters params, std::shared_ptr<IFlowModel> flow_model);
+                  Parameters params, std::shared_ptr<IFlowModel> flow_model,
+                  std::shared_ptr<ITransportModel> transport_model);
 
     // Backwards-compatible constructor with default models
     PhysicsSolver(std::shared_ptr<CoffeeBed> bed, std::shared_ptr<IWaterFlow> flow,
@@ -50,13 +52,13 @@ class PhysicsSolver {
     void modify_local_flow(size_t i, size_t j, double particle_size, double extraction_state);
     void update_particle_state(const std::shared_ptr<ICoffeeParticle>& particle, double vx,
                                double vy);
-    double calculate_temperature_factor() const;
 
     std::shared_ptr<CoffeeBed> coffee_bed_;
     std::shared_ptr<IWaterFlow> water_flow_;
     Parameters params_;
 
     std::shared_ptr<IFlowModel> flow_model_;
+    std::shared_ptr<ITransportModel> transport_model_;
 };
 
 } // namespace sprosim
