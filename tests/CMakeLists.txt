@@ -11,6 +11,7 @@ add_executable(sprosim_tests
     permeability/test_KozenyCarmanPermeabilityModel.cpp
     permeability/test_ConstantPermeabilityModel.cpp
     flow/test_DarcyFlowModel.cpp
+    transport/test_LinearExtractionModel.cpp
 )
 
 # Include directories
