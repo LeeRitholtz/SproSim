@@ -462,7 +462,7 @@ auto flow = std::make_shared<WaterFlow>(58, 30);
 PhysicsSolver::Parameters params{
     .permeability = 1e-12,
     .fluid_viscosity = 1e-3,
-    .extraction_rate = 0.05,
+    .extraction_rate = 0.01,
     .temperature = 368.15,        // 95°C
     .inlet_pressure = 9e5,        // 9 bar
     .outlet_pressure = 1e5,       // 1 bar
