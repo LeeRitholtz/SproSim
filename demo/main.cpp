@@ -35,7 +35,7 @@ struct BrewingParameters {
 
     // Advanced parameters
     double porosity = 0.4;         // initial bed porosity
-    double extraction_rate = 0.05; // rate constant
+    double extraction_rate = 0.01; // rate constant
     int grid_width = 58;           // flow field width
     int grid_height = 30;          // flow field height
     double timestep = 0.01;        // simulation dt
