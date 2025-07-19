@@ -5,6 +5,10 @@
 #include <iomanip>
 #include <iostream>
 
+#ifdef SPROSIM_HAS_VTK
+#include "../visualization/paraview/exporters/VTKExporter.h"
+#endif
+
 namespace sprosim {
 
 SimulationManager::SimulationManager(const Configuration& config, const Parameters& physics_params)

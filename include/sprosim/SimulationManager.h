@@ -6,7 +6,7 @@
 #include "sprosim/WaterFlow.h"
 
 #ifdef SPROSIM_HAS_VTK
-#include "paraview/exporters/VTKExporter.h"
+#include "../visualization/paraview/exporters/VTKExporter.h"
 #endif
 
 #include <functional>
