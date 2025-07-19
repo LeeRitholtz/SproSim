@@ -5,10 +5,6 @@
 #include "sprosim/PhysicsSolver.h"
 #include "sprosim/WaterFlow.h"
 
-#ifdef SPROSIM_HAS_VTK
-#include "../visualization/paraview/exporters/VTKExporter.h"
-#endif
-
 #include <functional>
 #include <memory>
 #include <string>
@@ -45,6 +41,8 @@ namespace sprosim {
  */
 class SimulationManager {
   public:
+    // Forward declaration for pImpl pattern
+    struct Impl;
     /**
      * @brief Simulation configuration parameters
      */
@@ -127,6 +125,11 @@ class SimulationManager {
     explicit SimulationManager(const Configuration& config);
 
     /**
+     * @brief Destructor
+     */
+    ~SimulationManager();
+
+    /**
      * @brief Run complete brewing simulation
      * @return Simulation results and statistics
      */
@@ -154,9 +157,8 @@ class SimulationManager {
     std::shared_ptr<WaterFlow> water_flow_;
     std::shared_ptr<PhysicsSolver> physics_solver_;
 
-#ifdef SPROSIM_HAS_VTK
-    std::unique_ptr<sprosim::visualization::VTKExporter> vtk_exporter_;
-#endif
+    // pImpl to hide VTK implementation details
+    std::unique_ptr<Impl> pimpl_;
 
     // Setup methods
     void initialize_simulation();

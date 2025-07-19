@@ -2,8 +2,8 @@
 #include "sprosim/CoffeeParticle.h"
 #include "sprosim/CoffeeParticle3D.h"
 #include <cmath>
-#include <iomanip>
-#include <iostream>
+// #include <iomanip>
+// #include <iostream>
 
 #ifdef SPROSIM_HAS_VTK
 #include "../visualization/paraview/exporters/VTKExporter.h"
@@ -11,14 +11,26 @@
 
 namespace sprosim {
 
+// pImpl struct to hide VTK implementation details
+struct SimulationManager::Impl {
+#ifdef SPROSIM_HAS_VTK
+    std::unique_ptr<sprosim::visualization::VTKExporter> vtk_exporter_;
+#endif
+};
+
 SimulationManager::SimulationManager(const Configuration& config, const Parameters& physics_params)
-    : config_(config), physics_params_(physics_params) {
+    : config_(config), physics_params_(physics_params), pimpl_(std::make_unique<Impl>()) {
     // Constructor just stores parameters, actual initialization happens in run_simulation()
 }
 
 SimulationManager::SimulationManager(const Configuration& config)
-    : config_(config), physics_params_(convert_to_physics_params(config)) {
+    : config_(config), physics_params_(convert_to_physics_params(config)),
+      pimpl_(std::make_unique<Impl>()) {
     // Constructor with automatic physics parameter conversion
+}
+
+SimulationManager::~SimulationManager() {
+    // Explicit destructor needed for unique_ptr with forward declaration
 }
 
 SimulationManager::Results SimulationManager::run_simulation() {
@@ -169,20 +181,21 @@ void SimulationManager::report_progress(double current_time, double progress,
 void SimulationManager::setup_vtk_export() {
 #ifdef SPROSIM_HAS_VTK
     if (config_.export_vtk) {
-        vtk_exporter_ = std::make_unique<sprosim::visualization::VTKExporter>();
-        vtk_exporter_->set_output_directory(config_.vtk_output_dir);
-        vtk_exporter_->start_time_series("brewing.pvd", "timestep");
+        pimpl_->vtk_exporter_ = std::make_unique<sprosim::visualization::VTKExporter>();
+        pimpl_->vtk_exporter_->set_output_directory(config_.vtk_output_dir);
+        pimpl_->vtk_exporter_->start_time_series("brewing.pvd", "timestep");
     }
 #endif
 }
 
 void SimulationManager::export_vtk_timestep(double current_time, int step) {
 #ifdef SPROSIM_HAS_VTK
-    if (config_.export_vtk && vtk_exporter_) {
+    if (config_.export_vtk && pimpl_->vtk_exporter_) {
         // Export every 50th step to avoid too many files
         const int total_steps = static_cast<int>(config_.brewing_time / config_.timestep);
         if (step % (total_steps / 50 + 1) == 0) {
-            vtk_exporter_->add_timestep_to_series(coffee_bed_, water_flow_, current_time, step);
+            pimpl_->vtk_exporter_->add_timestep_to_series(coffee_bed_, water_flow_, current_time,
+                                                          step);
         }
     }
 #endif
@@ -190,8 +203,8 @@ void SimulationManager::export_vtk_timestep(double current_time, int step) {
 
 void SimulationManager::finalize_vtk_export() {
 #ifdef SPROSIM_HAS_VTK
-    if (config_.export_vtk && vtk_exporter_) {
-        vtk_exporter_->finalize_time_series();
+    if (config_.export_vtk && pimpl_->vtk_exporter_) {
+        pimpl_->vtk_exporter_->finalize_time_series();
     }
 #endif
 }
