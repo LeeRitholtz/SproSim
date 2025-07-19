@@ -1,22 +1,22 @@
 #include "sprosim/Parameters.h"
 #include "sprosim/SimulationManager.h"
-#include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 
 using namespace sprosim;
 
-TEST_CASE("SimulationManager basic construction", "[SimulationManager]") {
+TEST_CASE("SimulationManager basic construction and configuration", "[SimulationManager]") {
     SECTION("Constructor with basic configuration") {
         SimulationManager::Configuration config;
         config.dose = 18.0;
-        config.brewing_time = 5.0;
+        config.brewing_time = 5.0; // Short test time
         config.timestep = 0.1;
-        config.particle_count = 50;
-        config.export_vtk = false;
+        config.particle_count = 50; // Small particle count for test speed
+        config.export_vtk = false;  // Disable VTK for unit tests
 
-        // Test construction succeeds
         SimulationManager manager(config);
-        REQUIRE(true); // If we get here, construction succeeded
+        // If construction succeeds, test passes
+        REQUIRE(true);
     }
 
     SECTION("Constructor with explicit physics parameters") {
@@ -32,10 +32,12 @@ TEST_CASE("SimulationManager basic construction", "[SimulationManager]") {
         physics_params.fluid_viscosity = 1e-3;
         physics_params.extraction_rate = 0.01;
         physics_params.temperature = 368.15;
+        physics_params.inlet_pressure = 9e5 + 1e5; // 9 bar + atmospheric
+        physics_params.outlet_pressure = 1e5;      // Atmospheric pressure
 
-        // Test construction with explicit parameters succeeds
         SimulationManager manager(config, physics_params);
-        REQUIRE(true); // If we get here, construction succeeded
+        // If construction succeeds, test passes
+        REQUIRE(true);
     }
 }
 

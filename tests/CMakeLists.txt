@@ -12,6 +12,7 @@ add_executable(sprosim_tests
     permeability/test_ConstantPermeabilityModel.cpp
     flow/test_DarcyFlowModel.cpp
     transport/test_LinearExtractionModel.cpp
+    simulation/test_SimulationManager.cpp
 )
 
 # Include directories
@@ -23,6 +24,7 @@ target_include_directories(sprosim_tests PRIVATE
 # Link libraries
 target_link_libraries(sprosim_tests PRIVATE
     sprosim
+    sprosim_visualization
     Catch2::Catch2WithMain
 )
 
