@@ -12,6 +12,7 @@ add_library(sprosim
     src/CoffeeParticle3D.cpp
     src/WaterFlow.cpp
     src/PhysicsSolver.cpp
+    src/SimulationManager.cpp
     src/models/transport/LinearExtractionModel.cpp
 )
 
@@ -19,6 +20,7 @@ add_library(sprosim
 target_include_directories(sprosim
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/visualization>
         $<INSTALL_INTERFACE:include>
 )
 
