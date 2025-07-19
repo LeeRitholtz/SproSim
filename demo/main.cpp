@@ -1,6 +1,6 @@
 #include <cstring>
+#include <iomanip>
 #include <iostream>
-#include <memory>
 
 #include "sprosim/SimulationManager.h"
 
