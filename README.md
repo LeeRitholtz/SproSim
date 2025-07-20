@@ -1,6 +1,6 @@
 # SproSim - A "Vibe Coded" Espresso Extraction Simulation Library
 
-SproSim is a C++ library for espresso simulation, enabling data-driven understanding of brewing parameter impacts and systematic coffee research. It models complete physics - from puck preparation through extraction - to predict shot outcomes and systematically explore recipe parameter spaces. This provides a hackable platform for testing coffee theories with quantitative data.
+SproSim is a C++ library for espresso simulation, enabling data-driven understanding of brewing parameter impacts and systematic coffee research. It models complete physics - from puck preparation through extraction - to predict shot outcomes and systematically explore both recipe parameter spaces and physics regimes. This provides a hackable platform for testing coffee theories with quantitative data.
 
 ### *Disclaimer & Thoughts*:
 This project is very experimental and well over 85% of the code (and docs) has been developed by an LLM! The code base is basically a disaster right now, but it is slowly improving.
@@ -10,11 +10,12 @@ The bottom line is that, right now, building a significant project with an AI co
 ## Features
 
 - **Parameter Impact Analysis**: Understand how dose, pressure, grind size, time, and temperature choices affect extraction outcomes
-- **Parameter Space Exploration**: Systematically test brewing parameter combinations and their interactions
+- **Parameter Space Exploration**: Systematically test brewing parameter combinations AND physics model choices to understand both recipe effects and model accuracy
 - **Puck Preparation Analysis**: Model how tamping, distribution, and bed compaction choices influence flow and extraction
 - **Extraction Prediction**: Forecast yield, strength, and uniformity patterns from brewing parameters
 - **Quantitative Brewing Research**: Generate data-driven insights into brewing cause-and-effect relationships
 - **Brewing Theory Testing**: Validate coffee science hypotheses with controlled simulation experiments
+- **Physics Model Validation**: Map how different brewing parameter ranges activate different physics regimes (flow, transport, permeability) to understand which models apply under which conditions
 - **Complete Physics Modeling**: From particle-level extraction to flow dynamics and bed mechanics
 - **Research Visualization**: 3D analysis of flow patterns, extraction gradients, and brewing dynamics
 
@@ -24,6 +25,10 @@ The bottom line is that, right now, building a significant project with an AI co
 - **Transport Models**: Swappable extraction theories (current: LinearExtraction, future: multi-compound, etc.)
 - **Permeability Models**: How bed structure affects flow resistance (current: Constant, KozenyCarman, future: Ergun equation, Burke-Plummer, Happel-Brenner)
 - **Particle Models**: Individual particle behavior and physics (current: 2D/3D particles, future: non-spherical shapes, non-uniform material properties, particle interactions)
+
+## Research Vision
+
+SproSim enables systematic coffee science research by allowing you to vary both brewing parameters (dose, pressure, temperature) and physics models (flow, transport, permeability theories) in the same study. Understand how different physics regimes emerge across brewing parameter ranges, providing insights for iterative brewing improvement and informed preparation choices.
 
 ## Requirements
 
