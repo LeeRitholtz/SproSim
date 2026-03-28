@@ -141,17 +141,17 @@ std::shared_ptr<PhysicsSolver> SimulationManager::create_physics_solver() {
 Parameters SimulationManager::convert_to_physics_params(const Configuration& config) {
     Parameters physics_params;
 
-    // Convert user-friendly brewing parameters to physics parameters
+    // Map brewing parameters to physics parameters (no unit conversion needed)
     physics_params.permeability = 1e-12;                     // Default bed permeability [m²]
     physics_params.fluid_viscosity = 1e-3;                   // Water viscosity [Pa·s]
     physics_params.extraction_rate = config.extraction_rate; // [1/s]
-    physics_params.temperature = config.temperature_celsius + 273.15; // °C to K
-    physics_params.inlet_pressure = config.pressure_bar * 1e5 + 1e5;  // bar to Pa + atmospheric
-    physics_params.outlet_pressure = 1e5;                             // Atmospheric pressure [Pa]
+    physics_params.temperature = config.temperature_celsius;            // [°C]
+    physics_params.inlet_pressure = config.pressure_bar + 1.01325;     // brewing + atmospheric [bar]
+    physics_params.outlet_pressure = 1.01325;                          // atmospheric [bar]
     physics_params.particle_drag = 0.1;             // Default particle drag coefficient
     physics_params.flow_resistance = 0.2;           // Default flow resistance
     physics_params.saturation_concentration = 0.15; // Default saturation [kg/m³]
-    physics_params.temperature_factor = 0.008;      // Default Arrhenius factor [K⁻¹]
+    physics_params.temperature_factor = 0.008;      // Default Arrhenius factor [°C⁻¹]
 
     return physics_params;
 }

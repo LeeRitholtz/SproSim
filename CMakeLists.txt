@@ -72,7 +72,14 @@ target_include_directories(sprosim_demo PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
+# Example executables
+add_executable(basic_simulation examples/basic_simulation.cpp)
+target_link_libraries(basic_simulation PRIVATE sprosim sprosim_visualization)
+target_include_directories(basic_simulation PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+add_executable(custom_transport_model examples/custom_transport_model.cpp)
+target_link_libraries(custom_transport_model PRIVATE sprosim sprosim_visualization)
+target_include_directories(custom_transport_model PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Code formatting with clang-format
 find_program(CLANG_FORMAT_EXECUTABLE clang-format)

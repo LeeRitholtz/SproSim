@@ -27,7 +27,8 @@ class DarcyFlowModel : public IFlowModel {
         if (bed_height <= 0.0)
             return;
 
-        double delta_p = params.outlet_pressure - params.inlet_pressure;
+        // Convert bar to Pa for Darcy's law
+        double delta_p = (params.outlet_pressure - params.inlet_pressure) * 1e5;
         double dp_dy = delta_p / bed_height;
 
         double porosity = bed->get_porosity();

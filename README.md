@@ -48,62 +48,12 @@ cmake --build .
 cd build && ctest                # Or using CTest directly
 ```
 
-## Library Usage
+## Examples
 
-### Basic Example
+See the [examples/](examples/) directory for compilable usage examples:
 
-```cpp
-#include "sprosim/SimulationManager.h"
-using namespace sprosim;
-
-SimulationManager::Configuration config;
-config.dose = 18.0;           // grams
-config.target_yield = 36.0;   // grams
-config.brewing_time = 30.0;   // seconds
-config.pressure_bar = 9.0;
-config.temperature_celsius = 95.0;
-
-SimulationManager sim(config);
-auto result = sim.run_simulation();
-```
-
-### Configuration Options
-
-```cpp
-config.dose = 18.0;                    // Coffee dose (grams)
-config.particle_count = 350;           // Number of particles
-config.pressure_bar = 9.0;             // Brewing pressure
-config.temperature_celsius = 95.0;     // Water temperature
-config.brewing_time = 30.0;            // Max brew time (seconds)
-config.target_yield = 36.0;            // Target output (grams)
-config.use_3d = false;                 // Use 3D particles
-config.enable_vtk_export = false;      // Export for ParaView
-```
-
-### Advanced Usage with Transport Models
-
-```cpp
-#include "sprosim/PhysicsSolver.h"
-#include "sprosim/models/transport/LinearExtractionModel.h"
-
-// Create components
-auto bed = std::make_shared<CoffeeBed>(18.0, 58.0);
-auto flow = std::make_shared<WaterFlow>(58, 30);
-auto transport_model = std::make_shared<LinearExtractionModel>();
-auto flow_model = std::make_shared<DarcyFlowModel>(/* permeability model */);
-
-PhysicsSolver::Parameters params{/* physics parameters */};
-PhysicsSolver solver(bed, flow, params, flow_model, transport_model);
-
-// Custom transport model
-class MyTransportModel : public ITransportModel {
-    void update_extraction(std::shared_ptr<IWaterFlow> water_flow,
-                          std::shared_ptr<CoffeeBed> bed,
-                          const Parameters& params, double dt) override {
-        // Your extraction physics here
-    }
-};
-```
+- **[basic_simulation.cpp](examples/basic_simulation.cpp)** — Configure and run a simulation using `SimulationManager`
+- **[custom_transport_model.cpp](examples/custom_transport_model.cpp)** — Implement a custom `ITransportModel` and plug it into `PhysicsSolver`
 
 ## Visualization
 

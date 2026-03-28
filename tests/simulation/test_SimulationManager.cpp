@@ -32,9 +32,9 @@ TEST_CASE("SimulationManager basic construction and configuration", "[Simulation
         physics_params.permeability = 1e-12;
         physics_params.fluid_viscosity = 1e-3;
         physics_params.extraction_rate = 0.01;
-        physics_params.temperature = 368.15;
-        physics_params.inlet_pressure = 9e5 + 1e5; // 9 bar + atmospheric
-        physics_params.outlet_pressure = 1e5;      // Atmospheric pressure
+        physics_params.temperature = 95.0;              // 95°C
+        physics_params.inlet_pressure = 9.0 + 1.01325;  // 9 bar + atmospheric
+        physics_params.outlet_pressure = 1.01325;        // Atmospheric pressure [bar]
 
         SimulationManager manager(config, physics_params);
         // If construction succeeds, test passes

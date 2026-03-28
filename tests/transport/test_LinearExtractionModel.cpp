@@ -15,7 +15,7 @@ TEST_CASE("LinearExtractionModel temperature factor calculation", "[LinearExtrac
 
     SECTION("Temperature factor validation through extraction") {
         Parameters params;
-        params.temperature = 373.15;
+        params.temperature = 100.0;
         params.temperature_factor = 0.1;
         params.extraction_rate = 1.0;
         params.saturation_concentration = 10.0;
@@ -44,7 +44,7 @@ TEST_CASE("LinearExtractionModel temperature factor calculation", "[LinearExtrac
 TEST_CASE("LinearExtractionModel extraction physics", "[LinearExtractionModel]") {
     LinearExtractionModel model;
     Parameters params;
-    params.temperature = 373.15; // 100°C
+    params.temperature = 100.0; // 100°C
     params.temperature_factor = 0.1;
     params.extraction_rate = 0.5;
     params.saturation_concentration = 10.0;
@@ -117,7 +117,7 @@ TEST_CASE("LinearExtractionModel extraction physics", "[LinearExtractionModel]")
 TEST_CASE("LinearExtractionModel boundary conditions", "[LinearExtractionModel]") {
     LinearExtractionModel model;
     Parameters params;
-    params.temperature = 373.15;
+    params.temperature = 100.0;
     params.temperature_factor = 0.1;
     params.extraction_rate = 1.0;
     params.saturation_concentration = 10.0;
@@ -174,7 +174,7 @@ TEST_CASE("LinearExtractionModel parameter sensitivity", "[LinearExtractionModel
 
         // Low extraction rate
         Parameters params1;
-        params1.temperature = 373.15;
+        params1.temperature = 100.0;
         params1.temperature_factor = 0.1;
         params1.extraction_rate = 1.0;
         params1.saturation_concentration = 10.0;
@@ -207,14 +207,14 @@ TEST_CASE("LinearExtractionModel parameter sensitivity", "[LinearExtractionModel
 
         // Lower temperature
         Parameters params1;
-        params1.temperature = 363.15; // 90°C
+        params1.temperature = 90.0; // 90°C
         params1.temperature_factor = 0.1;
         params1.extraction_rate = 1.0;
         params1.saturation_concentration = 10.0;
 
         // Higher temperature
         Parameters params2 = params1;
-        params2.temperature = 383.15; // 110°C
+        params2.temperature = 110.0; // 110°C
 
         double dt = 0.01;
         model.update_extraction(water_flow, bed1, params1, dt);

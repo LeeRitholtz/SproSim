@@ -112,8 +112,8 @@ TEST_CASE("DarcyFlowModel updates velocity field using permeability model", "[Da
 
     Parameters params;
     params.fluid_viscosity = 1e-3; // water viscosity Pa.s
-    params.inlet_pressure = 2e5;   // 2 bar
-    params.outlet_pressure = 1e5;  // 1 bar
+    params.inlet_pressure = 2.0;   // 2 bar
+    params.outlet_pressure = 1.0;  // 1 bar
 
     // Use constant permeability for simplicity, 1e-12 m2
     auto perm_model = std::make_shared<ConstantPermeabilityModel>(1e-12);
@@ -124,7 +124,8 @@ TEST_CASE("DarcyFlowModel updates velocity field using permeability model", "[Da
 
     // Calculate expected velocity manually
     double bed_height = 0.058; // basket height ~0.058 m from CoffeeBed default
-    double dp_dy = (params.outlet_pressure - params.inlet_pressure) / bed_height;
+    double delta_p_pa = (params.outlet_pressure - params.inlet_pressure) * 1e5;
+    double dp_dy = delta_p_pa / bed_height;
     double expected_velocity =
         -(perm_model->calculate_permeability(coffee_bed->get_porosity()) / params.fluid_viscosity) *
         dp_dy;
@@ -152,8 +153,8 @@ TEST_CASE("DarcyFlowModel velocity responds to porosity changes via permeability
 
     Parameters params;
     params.fluid_viscosity = 1e-3;
-    params.inlet_pressure = 200000;
-    params.outlet_pressure = 100000;
+    params.inlet_pressure = 2.0;   // 2 bar
+    params.outlet_pressure = 1.0;  // 1 bar
 
     auto kc_model = std::make_shared<KozenyCarmanPermeabilityModel>(1e-12);
     auto flow_model = std::make_shared<DarcyFlowModel>(kc_model);
@@ -161,7 +162,8 @@ TEST_CASE("DarcyFlowModel velocity responds to porosity changes via permeability
     // Test low porosity
     coffee_bed->set_porosity(0.3);
     flow_model->update_velocity(water_flow, coffee_bed, params);
-    double dp_dy = (params.outlet_pressure - params.inlet_pressure) / coffee_bed->get_bed_height();
+    double delta_p_pa = (params.outlet_pressure - params.inlet_pressure) * 1e5;
+    double dp_dy = delta_p_pa / coffee_bed->get_bed_height();
     double expected_velocity_low =
         -(kc_model->calculate_permeability(coffee_bed->get_porosity()) / params.fluid_viscosity) *
         dp_dy;

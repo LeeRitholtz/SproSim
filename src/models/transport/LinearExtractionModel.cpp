@@ -45,7 +45,8 @@ void LinearExtractionModel::update_extraction(std::shared_ptr<IWaterFlow> water_
 }
 
 double LinearExtractionModel::calculate_temperature_factor(const Parameters& params) const {
-    return std::exp(params.temperature_factor * (params.temperature - 373.15));
+    // params.temperature is in °C; reference point is 100°C (boiling)
+    return std::exp(params.temperature_factor * (params.temperature - 100.0));
 }
 
 } // namespace sprosim
