@@ -2,11 +2,6 @@
 
 SproSim is a C++ library for espresso simulation, enabling data-driven understanding of brewing parameter impacts and systematic coffee research. It models complete physics - from puck preparation through extraction - to predict shot outcomes and systematically explore both recipe parameter spaces and physics regimes. This provides a hackable platform for testing coffee theories with quantitative data.
 
-### *Disclaimer & Thoughts*:
-This project is very experimental and well over 85% of the code (and docs) has been developed by an LLM! The code base is basically a disaster right now, but it is slowly improving.
-
-The bottom line is that, right now, building a significant project with an AI coding agent/assistant isn't as simple as writing "build me an espresso extraction physics simulation library." I believe that it would be very hard to be productive on a real project if you don't have experience with the domain you're building in as well as the languages and tools being used. You also do need to know your code base, even if most of it is generated, because it can very quickly become an unscalable and unmaintainable mess (have it generate UML diagrams!). A clean and clear architecture approach definitely helps the LLM perform better because it provides natural constraints. It would be interesting to experiment with what combination of system design patterns, languages, and tools lend themselves best to LLM co-development. Overall, I'd say building this project with an LLM has been an awesome experience so far. It's certainly a very powerful productivity multiplier and it is definitely a skill that improves over time with increased reps.
-
 ## Features
 
 - **Parameter Impact Analysis**: Understand how dose, pressure, grind size, time, and temperature choices affect extraction outcomes
@@ -21,14 +16,12 @@ The bottom line is that, right now, building a significant project with an AI co
 
 ## Physics Architecture
 
-- **Flow Models**: Pluggable flow physics (current: Darcy, future: Forchheimer, Hagen-Poiseuille)
-- **Transport Models**: Swappable extraction theories (current: LinearExtraction, future: multi-compound, etc.)
-- **Permeability Models**: How bed structure affects flow resistance (current: Constant, KozenyCarman, future: Ergun equation, Burke-Plummer, Happel-Brenner)
-- **Particle Models**: Individual particle behavior and physics (current: 2D/3D particles, future: non-spherical shapes, non-uniform material properties, particle interactions)
+- **Flow Models**: Pluggable flow physics (Darcy)
+- **Transport Models**: Swappable extraction theories (LinearExtraction)
+- **Permeability Models**: How bed structure affects flow resistance (Constant, KozenyCarman)
+- **Particle Models**: Individual particle behavior and physics (2D and 3D particles)
 
-## Research Vision
-
-SproSim enables systematic coffee science research by allowing you to vary both brewing parameters (dose, pressure, temperature) and physics models (flow, transport, permeability theories) in the same study. Understand how different physics regimes emerge across brewing parameter ranges, providing insights for iterative brewing improvement and informed preparation choices.
+See [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) for the full directory layout and architecture diagram.
 
 ## Requirements
 
@@ -39,17 +32,18 @@ SproSim enables systematic coffee science research by allowing you to vary both 
 ## Quick Start
 
 ```bash
-./run_demo.sh                    # Build and run with defaults
-./run_demo.sh --scenario espresso # Run predefined espresso shot
-./build/tests/sprosim_tests      # Run test suite
-```
-
-## Building
-
-```bash
+# Build
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build .
+
+# Run demo
+./run_demo.sh                    # Build and run with defaults
+./run_demo.sh --scenario espresso # Run predefined espresso shot
+
+# Run tests
+./run_tests.sh                   # Using convenience script
+cd build && ctest                # Or using CTest directly
 ```
 
 ## Library Usage
@@ -109,20 +103,6 @@ class MyTransportModel : public ITransportModel {
 };
 ```
 
-## Project Structure
-
-```
-include/sprosim/          # Public API
-├── SimulationManager.h   # High-level simulation control
-├── PhysicsSolver.h       # Low-level physics engine
-├── interfaces/           # Abstract interfaces
-└── models/              # Physics models (transport, flow, permeability)
-src/                     # Implementation
-tests/                   # Unit tests
-demo/                    # Example usage
-visualization/           # ParaView integration
-```
-
 ## Visualization
 
 Export VTK files for ParaView analysis:
@@ -132,12 +112,7 @@ Export VTK files for ParaView analysis:
 paraview *.pvd  # Load time series data
 ```
 
-## Running Tests
-
-```bash
-cd build && ctest                # Using CTest
-./run_tests.sh                  # Using convenience script
-```
+See [visualization/README.md](visualization/README.md) for details.
 
 ## License
 

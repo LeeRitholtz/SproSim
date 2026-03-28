@@ -128,9 +128,7 @@ INPUT                  = include/sprosim \
                          tests \
                          visualization/paraview/exporters \
                          README.md \
-                         PROJECT_STRUCTURE.md \
-                         LIBRARIES.md \
-                         VISUALIZATION_SUCCESS.md
+                         PROJECT_STRUCTURE.md
 
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.h \

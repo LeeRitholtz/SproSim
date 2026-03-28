@@ -44,9 +44,6 @@ Testing/
 # Python tests generated directories
 .ropeproject/
 
-# Simulation generated files & directories
-VISUALIZATION_SUCCESS.md
-
 # VSCode Folder
 .vscode
 
@@ -84,13 +81,10 @@ Temporary Items
 .apdisk
 
 #-- Local project files and guidance docs for LLM
+design/
 TODO.md
 PROJECT_STRUCTURE.md
-TODO_LLM_FRIENDLY.md
-TODO_RECOMMENDATIONS.md
-LIBRARIES.md
-LLM_COLLABORATION_GUIDELINES.md
-TODO_NAMING_CONSISTENCY.md
+AGENT.md
 
 #-- zed IDE Files
 .zed/
